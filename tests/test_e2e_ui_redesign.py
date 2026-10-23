@@ -1228,3 +1228,154 @@ def test_t4_09_chat_upper_blank_space_removed(chat_soup):
     assert bottom_bar is not None
     bottom_classes = bottom_bar.get("class", [])
     assert "mt-auto" in bottom_classes, "Expected mt-auto on #bottom-controls-bar"
+
+
+def test_t4_10_simplified_academic_hub_date_pickers_and_faq_entry_ui(index_soup, index_html):
+    """
+    Scenario 10: Simplified Academic Exam & Results Hub, Native Date Pickers, FAQ Q&A Entry & User Role Option
+    - Confirms #entry-portal-section (Entry Form) appears before #academic-schedule-table-section for novice usability.
+    - Confirms all 16 date fields in #academic-static-form have attached <input type='date'> calendar pickers.
+    - Confirms #faq-qa-entry-section and #admin-faq-form exist inside #tab-content-academic-static.
+    - Confirms #new-user-role select includes EXAM_ENTRY option.
+    """
+    hub = index_soup.find(id="tab-content-academic-static")
+    assert hub is not None, "Missing #tab-content-academic-static"
+
+    # 1. Verify Entry Form appears before Schedule Table in DOM order
+    hub_str = str(hub)
+    form_pos = hub_str.find('id="entry-portal-section"')
+    table_pos = hub_str.find('id="academic-schedule-table-section"')
+    assert form_pos != -1 and table_pos != -1
+    assert form_pos < table_pos, "Entry form (#entry-portal-section) must appear before schedule table for novice workflow"
+
+    # 2. Verify all 16 date fields have <input type="date"> pickers
+    expected_date_targets = [
+        "static-incourse-date",
+        "static-last-incourse",
+        "static-form-fillup-start",
+        "static-form-fillup",
+        "static-exam-date",
+        "static-routine-url",
+        "static-admit-card",
+        "static-last-exam",
+        "static-practical-date",
+        "static-last-practical",
+        "static-prob-result",
+        "static-result-date",
+        "static-rescrutiny-start",
+        "static-rescrutiny-apply",
+        "static-rescrutiny-result",
+        "static-cert-printing",
+    ]
+    date_pickers = hub.find_all("input", attrs={"type": "date"})
+    picker_targets = {p.get("data-target-input") for p in date_pickers}
+    for target_id in expected_date_targets:
+        assert target_id in picker_targets, f"Missing <input type='date'> picker for #{target_id}"
+
+    # 3. Verify FAQ Q&A Entry section is inside #tab-content-academic-static
+    faq_sec = hub.find(id="faq-qa-entry-section")
+    assert faq_sec is not None, "Missing #faq-qa-entry-section inside #tab-content-academic-static"
+    assert faq_sec.find("form", id="admin-faq-form") is not None
+
+    # 4. Verify EXAM_ENTRY option in #new-user-role
+    role_select = index_soup.find("select", id="new-user-role")
+    assert role_select is not None
+    role_values = [opt.get("value") for opt in role_select.find_all("option")]
+    assert "EXAM_ENTRY" in role_values, f"Expected EXAM_ENTRY in #new-user-role options, got {role_values}"
+
+
+def test_t4_11_exam_entry_role_auth_and_permissions_e2e():
+    """
+    Scenario 11: 'Exam Entry' (EXAM_ENTRY) Staff User Login, Exam Submission, FAQ Entry & RBAC Isolation
+    - Verifies seeded 'exam_entry' account can log in via /api/v1/auth/login and has role EXAM_ENTRY.
+    - Verifies EXAM_ENTRY user can submit exam schedule data to POST /api/v1/admin/academic-exams.
+    - Verifies EXAM_ENTRY user can add FAQ Q&A via POST /api/v1/admin/faqs.
+    - Verifies EXAM_ENTRY user is forbidden (403) from accessing /api/v1/admin/users and /api/v1/admin/backup/list.
+    - Verifies Super Admin can create a new EXAM_ENTRY user via POST /api/v1/admin/users.
+    """
+    import time
+    from fastapi.testclient import TestClient
+    from backend.app import app
+    from backend.core.security import create_jwt_token, Role
+
+    client = TestClient(app)
+
+    # 1. Login with seeded 'exam_entry' staff user
+    login_res = client.post(
+        "/api/v1/auth/login",
+        json={"username": "exam_entry", "password": "nu_exam_2026"}
+    )
+    assert login_res.status_code == 200, f"Seeded exam_entry login failed: {login_res.text}"
+    login_data = login_res.json()
+    assert login_data["user"]["role"] == "EXAM_ENTRY"
+    exam_token = login_data["access_token"]
+    exam_headers = {"Authorization": f"Bearer {exam_token}"}
+
+    # 2. Submit exam data as EXAM_ENTRY user
+    exam_payload = {
+        "program_type": "Honours",
+        "program_type_name": "অনার্স (সম্মান)",
+        "examination_year": "2026",
+        "part": "Part 1",
+        "semester": "N/A",
+        "incourse_exam_date": "2026-02-01",
+        "form_fillup_start_date": "2026-03-10",
+        "form_fillup_deadline": "2026-04-05",
+        "exam_date": "2026-05-20",
+        "probable_result_date": "2026-08-30",
+        "results_published": "No",
+        "documents_printed": "No",
+        "remarks": "Submitted by Exam Entry staff"
+    }
+    save_exam_res = client.post("/api/v1/admin/academic-exams", headers=exam_headers, json=exam_payload)
+    assert save_exam_res.status_code == 200, f"EXAM_ENTRY failed to save exam record: {save_exam_res.text}"
+    assert save_exam_res.json()["status"] == "success"
+
+    # 3. Add FAQ Q&A as EXAM_ENTRY user
+    unique_q = f"২০২৬ সালের অনার্স ১ম বর্ষ পরীক্ষার বিশেষ ফরম পূরণের নিয়ম কী? ({int(time.time())})"
+    faq_res = client.post(
+        "/api/v1/admin/faqs",
+        headers=exam_headers,
+        json={
+            "question": unique_q,
+            "answer": "ইএমএস পোর্টাল (http://ems.nu.ac.bd/) থেকে অনলাইনে ফরম পূরণ করতে হবে।",
+            "category": "পরীক্ষা সংক্রান্ত",
+            "keywords": "অনার্স, ফরম পূরণ",
+            "force": True
+        }
+    )
+    assert faq_res.status_code == 200, f"EXAM_ENTRY failed to add FAQ: {faq_res.text}"
+    assert faq_res.json()["status"] == "success"
+
+    # 4. Verify EXAM_ENTRY is forbidden (403) from Admin-only endpoints
+    users_res = client.get("/api/v1/admin/users", headers=exam_headers)
+    assert users_res.status_code == 403, f"Expected 403 for EXAM_ENTRY on /admin/users, got {users_res.status_code}"
+
+    backup_res = client.get("/api/v1/admin/backup/list", headers=exam_headers)
+    assert backup_res.status_code == 403, f"Expected 403 for EXAM_ENTRY on /admin/backup/list, got {backup_res.status_code}"
+
+    # 5. Verify Super Admin can create a new EXAM_ENTRY user via POST /api/v1/admin/users
+    admin_token = create_jwt_token({"sub": "admin", "username": "admin", "role": Role.SUPER_ADMIN.value})
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+    temp_username = f"exam_staff_{int(time.time())}"
+    create_u_res = client.post(
+        "/api/v1/admin/users",
+        headers=admin_headers,
+        json={
+            "username": temp_username,
+            "password": "test_password_123",
+            "full_name": "Test Exam Entry Staff",
+            "department": "Controller of Examination Section",
+            "role": "EXAM_ENTRY"
+        }
+    )
+    assert create_u_res.status_code == 200, f"Failed to create EXAM_ENTRY user: {create_u_res.text}"
+    new_uid = create_u_res.json()["id"]
+    try:
+        list_u = client.get("/api/v1/admin/users", headers=admin_headers).json()
+        created_row = next((u for u in list_u if u["id"] == new_uid), None)
+        assert created_row is not None
+        assert created_row["role"] == "EXAM_ENTRY"
+    finally:
+        client.delete(f"/api/v1/admin/users/{new_uid}", headers=admin_headers)
+

@@ -53,6 +53,15 @@ def _init_users_table():
                     INSERT INTO users (username, email, password_hash, full_name, department, role, active, created_at)
                     VALUES (?, ?, ?, ?, ?, 'SOLVER', 1, ?)
                 """, (u_name, u_email, solver_pwd, u_full, u_dept, now_str))
+
+        # Default Exam Entry staff account (only Academic Exam & Results Hub + FAQ Q&A Entry)
+        exam_entry_cur = conn.execute("SELECT id FROM users WHERE username = 'exam_entry'")
+        if not exam_entry_cur.fetchone():
+            exam_entry_pwd = hash_password("nu_exam_2026")
+            conn.execute("""
+                INSERT INTO users (username, email, password_hash, full_name, department, role, active, created_at)
+                VALUES ('exam_entry', 'exam-entry@nu.ac.bd', ?, 'Exam & FAQ Entry Officer', 'Controller of Examination Section', 'EXAM_ENTRY', 1, ?)
+            """, (exam_entry_pwd, now_str))
     conn.close()
 
 _init_users_table()

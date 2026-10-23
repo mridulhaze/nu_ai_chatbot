@@ -42,12 +42,14 @@ def decrypt_credential_data(cipher_text: str) -> Optional[str]:
 class Role(str, Enum):
     USER = "USER"
     SOLVER = "SOLVER"
+    EXAM_ENTRY = "EXAM_ENTRY"
     ADMIN = "ADMIN"
     SUPER_ADMIN = "SUPER_ADMIN"
 
 ROLE_HIERARCHY = {
     Role.USER: 1,
     Role.SOLVER: 2,
+    Role.EXAM_ENTRY: 2,
     Role.ADMIN: 3,
     Role.SUPER_ADMIN: 4
 }

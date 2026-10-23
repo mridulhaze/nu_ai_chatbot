@@ -1016,10 +1016,18 @@
       </div>
 
       <div class="p-6 space-y-4 text-xs">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 space-y-1.5">
+          <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Role Demo Fill (দ্রুত লগইন নির্বাচন):</span>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="document.getElementById('admin-login-username').value='admin'; document.getElementById('admin-login-password').value='nu_admin_2026';" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg py-1.5 px-2 font-bold text-[10px] transition cursor-pointer">👑 Super Admin</button>
+            <button type="button" onclick="document.getElementById('admin-login-username').value='exam_entry'; document.getElementById('admin-login-password').value='nu_exam_2026';" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-lg py-1.5 px-2 font-bold text-[10px] transition cursor-pointer">📝 Exam Entry</button>
+            <button type="button" onclick="document.getElementById('admin-login-username').value='solver_ict'; document.getElementById('admin-login-password').value='nu_solver_2026';" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 rounded-lg py-1.5 px-2 font-bold text-[10px] transition cursor-pointer">🛠️ Dept Solver</button>
+          </div>
+        </div>
         <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Username (ইউজারনেম):</label>
-            <input id="admin-login-username" type="text" placeholder="e.g. admin or solver_ict" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-slate-800" />
+            <input id="admin-login-username" type="text" placeholder="e.g. admin, exam_entry, or solver_ict" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-slate-800" />
           </div>
 
           <div>
@@ -1048,7 +1056,7 @@
           <div class="w-8 h-8 rounded-lg bg-blue-700 text-white flex items-center justify-center font-bold text-xs">👥</div>
           <div>
             <h3 class="text-sm font-bold text-slate-900">Create Staff / Department Account</h3>
-            <p class="text-[11px] text-slate-500">Add new solver team desk, administrator or staff user</p>
+            <p class="text-[11px] text-slate-500">Add new Exam Entry staff, solver team desk, or administrator</p>
           </div>
         </div>
         <button onclick="closeCreateUserModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition">✕</button>
@@ -1057,17 +1065,17 @@
       <form onsubmit="handleCreateUserSubmit(event)" class="p-6 space-y-3 text-xs overflow-y-auto">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Username (Login ID) <span class="text-rose-500">*</span>:</label>
-          <input id="new-user-username" type="text" placeholder="e.g. solver_accounts" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
+          <input id="new-user-username" type="text" placeholder="e.g. exam_entry or solver_accounts" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Full Name / Desk Title <span class="text-rose-500">*</span>:</label>
-          <input id="new-user-fullname" type="text" placeholder="e.g. Accounts & Sonali Seba Officer" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
+          <input id="new-user-fullname" type="text" placeholder="e.g. Exam & FAQ Entry Officer" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Email Address:</label>
-          <input id="new-user-email" type="email" placeholder="e.g. accounts@nu.ac.bd" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
+          <input id="new-user-email" type="email" placeholder="e.g. exam-entry@nu.ac.bd" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600" />
         </div>
 
         <div>
@@ -1080,6 +1088,7 @@
             <label class="block font-bold text-slate-700 mb-1">Role:</label>
             <select id="new-user-role" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 focus:bg-white focus:outline-none">
               <option value="SOLVER">SOLVER (Department Desk)</option>
+              <option value="EXAM_ENTRY">EXAM_ENTRY (Exam &amp; FAQ Entry Staff)</option>
               <option value="ADMIN">ADMIN (Support Admin)</option>
               <option value="USER">USER (Staff / Student)</option>
             </select>
@@ -1875,93 +1884,19 @@
             </div>
           </div>
 
-          <!-- Section 1: FAQ Question & Answer Input Form with Real-Time Similarity Check -->
-          <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-2xs space-y-4">
-            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xl">✍️</span>
-                <div>
-                  <h4 class="text-sm font-bold text-slate-900">FAQ Question &amp; Answer Entry Portal</h4>
-                  <p class="text-[11px] text-slate-500">প্রশ্ন ও উত্তর ইনপুট করুন — ডাটাবেজের পূর্ববর্তী প্রশ্নের সাথে রিয়েল-টাইমে সাদৃশ্য যাচাই হবে</p>
-                </div>
+          <!-- Section 1: Shortcut to FAQ Q&A Entry Portal in Academic Exam & Results Hub -->
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-emerald-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">❓</span>
+              <div>
+                <h4 class="text-xs sm:text-sm font-bold text-slate-900">FAQ Q&amp;A Entry (FAQ প্যানেলে সরাসরি প্রশ্ন ও উত্তর যোগ করুন)</h4>
+                <p class="text-[11px] text-slate-500">চ্যাটবটের মূল FAQ প্যানেলের জন্য প্রশ্নোত্তর এন্ট্রি সেকশনটি এখন '🎓 Academic Exam &amp; Results Hub'-এ যুক্ত করা হয়েছে।</p>
               </div>
-              <span class="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-                AI Similarity Guard Active
-              </span>
             </div>
-
-            <form id="admin-faq-form" onsubmit="submitAdminFaqForm(event)" class="space-y-4 text-xs">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">ক্যাটাগরি / বিভাগ (Category) <span class="text-rose-500">*</span>:</label>
-                  <select id="admin-faq-category" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:bg-white focus:outline-none focus:border-purple-600">
-                    <option value="ভর্তি সংক্রান্ত">🏛️ ভর্তি সংক্রান্ত (Admissions)</option>
-                    <option value="পরীক্ষা সংক্রান্ত">📝 পরীক্ষা সংক্রান্ত (Examinations & Routines)</option>
-                    <option value="রেজাল্ট সংক্রান্ত">📊 রেজাল্ট সংক্রান্ত (Results & Re-scrutiny)</option>
-                    <option value="সার্টিফিকেট ও সেবা">📜 সার্টিফিকেট ও সেবা (Certificates & Services)</option>
-                    <option value="ফি ও সোনালী সেবা">💳 ফি ও সোনালী সেবা (Fees & Sonali Seba)</option>
-                    <option value="সাধারণ তথ্য">ℹ️ সাধারণ তথ্য (General Information)</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">অফিসিয়াল নোটিশ / সার্কুলার লিংক (Source URL):</label>
-                  <input id="admin-faq-source-url" type="text" placeholder="https://www.nu.ac.bd/notice.pdf বা http://103.113.200.68/nu-app/" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-purple-600" />
-                </div>
-              </div>
-
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <label class="block text-[11px] font-bold text-slate-700">প্রশ্ন (Question) <span class="text-rose-500">*</span>:</label>
-                  <button type="button" onclick="checkAdminFaqSimilarity()" class="text-[10px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-0.5 rounded cursor-pointer transition">
-                    🔍 Check Similarity Now
-                  </button>
-                </div>
-                <textarea id="admin-faq-question" oninput="debounceAdminFaqSimilarity()" rows="2" required placeholder="e.g. ২০২৩ সালের অনার্স ১ম বর্ষ পরীক্ষার ইনকোর্স ও ব্যবহারিক নম্বর এন্ট্রি করার নিয়ম কি?" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-purple-600"></textarea>
-              </div>
-
-              <!-- Real-time Similarity Alert Box -->
-              <div id="admin-faq-sim-box" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 space-y-2 animate-in fade-in duration-200">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold flex items-center gap-1.5 text-xs text-amber-800">
-                    <span>⚠️</span>
-                    <span>সতর্কবার্তা: ডাটাবেজে একটি অত্যন্ত সাদৃশ্যপূর্ণ প্রশ্ন বিদ্যমান রয়েছে! (সাদৃশ্য স্কোর: <span id="admin-faq-sim-pct" class="font-extrabold text-rose-700">--</span>%)</span>
-                  </span>
-                  <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded">Similarity Match</span>
-                </div>
-                <div class="p-2.5 bg-white/80 rounded-lg border border-amber-200 text-[11px] space-y-1">
-                  <p><strong class="text-slate-800">বিদ্যমান প্রশ্ন:</strong> <span id="admin-faq-sim-question" class="text-slate-700"></span></p>
-                  <p><strong class="text-slate-800">বিদ্যমান উত্তর:</strong> <span id="admin-faq-sim-answer" class="text-slate-600 line-clamp-2"></span></p>
-                </div>
-                <label class="flex items-center gap-2 cursor-pointer pt-1 text-xs font-bold text-amber-950">
-                  <input type="checkbox" id="admin-faq-force" class="rounded border-amber-400 text-amber-700 focus:ring-amber-500 w-4 h-4 cursor-pointer" />
-                  <span>সাদৃশ্য থাকা সত্ত্বেও জোরপূর্বক নতুন রেকর্ড হিসেবে যোগ করুন (Force Insert)</span>
-                </label>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">বিস্তারিত উত্তর (Detailed Answer) <span class="text-rose-500">*</span>:</label>
-                <textarea id="admin-faq-answer" rows="3" required placeholder="সঠিক ও প্রাতিষ্ঠানিক উত্তর, প্রয়োজনীয় শর্তাবলী এবং অফিশিয়াল পোর্টাল লিংক লিখুন..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-purple-600"></textarea>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">কীওয়ার্ড / ট্যাগ (Keywords):</label>
-                  <input id="admin-faq-keywords" type="text" placeholder="e.g. অনার্স, ইনকোর্স, ব্যবহারিক, পোর্টাল" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-purple-600" />
-                </div>
-                <div class="flex items-end justify-between gap-3">
-                  <span id="admin-faq-status-msg" class="text-xs font-semibold"></span>
-                  <div class="flex items-center gap-2">
-                    <button type="button" onclick="clearAdminFaqForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3.5 py-2 rounded-xl transition cursor-pointer">
-                      Clear
-                    </button>
-                    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-4 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer">
-                      <span>💾</span>
-                      <span>Save &amp; Ingest FAQ</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
+            <button type="button" onclick="switchAdminTab('academic_static'); setTimeout(() => { const el = document.getElementById('faq-qa-entry-section'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-2xs cursor-pointer flex items-center gap-1.5">
+              <span>✍️</span>
+              <span>Open FAQ Q&amp;A Entry</span>
+            </button>
           </div>
 
           <!-- Section 2: Many-to-Many Q&A Knowledge Pair Form -->
@@ -2047,15 +1982,18 @@
         <div id="tab-content-users" class="space-y-4 hidden">
           <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div>
-              <h3 class="font-bold text-slate-800 text-sm">System & Department Solver Accounts</h3>
-              <p class="text-[11px] text-slate-500">Manage administrator privileges, solver department desks, and user account statuses</p>
+              <h3 class="font-bold text-slate-800 text-sm">System, Exam Entry &amp; Department Solver Accounts</h3>
+              <p class="text-[11px] text-slate-500">Manage Super Admins, Exam Entry Staff (Academic Exam &amp; FAQ Entry only), Department Solvers, and User accounts</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="loadAdminUsers()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="loadAdminUsers()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1 cursor-pointer">
                 <span>🔄</span>
                 <span>Refresh Users</span>
               </button>
-              <button onclick="openCreateUserModal()" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-2xs flex items-center gap-1.5">
+              <button onclick="openCreateExamEntryUserModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-2xs flex items-center gap-1.5 cursor-pointer" title="Create an Exam Entry staff account with access only to Academic Exam &amp; Results Hub and FAQ Q&amp;A Entry">
+                <span>📝 + Add Exam Entry Staff</span>
+              </button>
+              <button onclick="openCreateUserModal()" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-2xs flex items-center gap-1.5 cursor-pointer">
                 <span>+ Create Account / Desk</span>
               </button>
             </div>
@@ -2281,461 +2219,472 @@
           </div>
         </div>
 
-        <!-- Tab Content: Academic Exam Static Info Hub -->
-                <!-- Tab Content: Academic Exam Static Info Hub (2-Column Dense Layout matching Reference UI) -->
-        <div id="tab-content-academic-static" class="space-y-5 hidden">
-          <!-- 1. Hero Card (Deep Navy Marble Pattern matching Screenshot) -->
-          <div class="bg-gradient-to-r from-slate-950 via-[#0B1528] to-slate-900 rounded-2xl p-5 sm:p-6 text-white shadow-md border border-slate-800 space-y-3.5">
-            <div class="space-y-1.5">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-2xl">🎓</span>
-                <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">Academic Exam &amp; Results Information Hub (Static Schedule)</h3>
-                <span class="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-amber-400/30">Admin Central Database</span>
+        <!-- Tab Content: Academic Exam Static Info Hub (Simplified Novice-Friendly Layout + Date Pickers + FAQ Q&A Entry) -->
+        <div id="tab-content-academic-static" class="space-y-4 hidden">
+          
+          <!-- Step 1: Simple Exam Name Selector, Year Filter & Quick Section Switch -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-2.5 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🎓</span>
+                <div>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900">Academic Exam &amp; Results Hub (সহজ পরীক্ষা ও ফলাফল এন্ট্রি)</h3>
+                  <p class="text-[11px] text-slate-500">১. পরীক্ষার নাম নির্বাচন করুন &rarr; ২. সাল ও তারিখ দিন (📅 ক্যালেন্ডার থেকে) &rarr; ৩. Submit বাটনে ক্লিক করুন</p>
+                </div>
               </div>
-              <p class="text-xs text-slate-300 leading-relaxed max-w-3xl">
-                অনার্স (পার্ট ১, ২, ৩, ৪), ডিগ্রী পাস (পার্ট ১, ২, ৩), মাস্টার্স এবং প্রফেশনাল কোর্সের পরীক্ষার তারিখ, ফলাফল প্রকাশ, সংশোধনী ও ফলাফল পোর্টাল লিংক সংক্রান্ত তথ্য ব্যবস্থাপনা
-              </p>
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <a href="#entry-portal-section" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-2xs flex items-center gap-1.5 cursor-pointer">
+                  <span>📝</span>
+                  <span>Exam Entry Form</span>
+                </a>
+                <a href="#faq-qa-entry-section" onclick="loadRecentFaqPanelEntries()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-2xs flex items-center gap-1.5 cursor-pointer">
+                  <span>❓</span>
+                  <span>FAQ Q&amp;A Entry</span>
+                </a>
+                <a href="#academic-schedule-table-section" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition flex items-center gap-1 cursor-pointer">
+                  <span>📋</span>
+                  <span>Saved List</span>
+                </a>
+              </div>
             </div>
-            <div>
-              <button type="button" onclick="loadAcademicStaticList()" class="bg-[#1E3A8A] hover:bg-[#1D4ED8] text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm border border-blue-400/30 cursor-pointer">
-                <span>🔄</span>
-                <span>Refresh Records</span>
-              </button>
-            </div>
-          </div>
 
-          <!-- 2. Academic Program Sub-Navigation & Filter Control Bar (Unified Top Bar) -->
-          <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-            <!-- Row 1: Academic Program Navigation Tabs & Fast Navigation -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-              <div class="flex items-center gap-2 overflow-x-auto text-xs font-bold py-0.5 max-w-full">
-                <button id="subtab-academic-honours" onclick="switchAcademicSubTab('Honours')" class="py-2 px-4 rounded-xl bg-slate-900 text-white flex items-center gap-2 shadow-xs cursor-pointer transition font-bold shrink-0">
+            <!-- Simple Row: Exam Names + Year Filter -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-0.5">
+              <!-- Exam Name Buttons -->
+              <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+                <span class="text-[11px] font-bold text-slate-600 mr-1">১. পরীক্ষার নাম (Exam Name):</span>
+                <button id="subtab-academic-honours" type="button" onclick="switchAcademicSubTab('Honours')" class="py-2 px-3.5 rounded-xl bg-slate-900 text-white flex items-center gap-1.5 shadow-xs cursor-pointer transition font-bold">
                   <span>🎓</span>
                   <span>Honours (অনার্স)</span>
                 </button>
-                <button id="subtab-academic-degree" onclick="switchAcademicSubTab('Degree Pass')" class="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-2 cursor-pointer transition font-medium shrink-0">
+                <button id="subtab-academic-degree" type="button" onclick="switchAcademicSubTab('Degree Pass')" class="py-2 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 cursor-pointer transition font-medium">
                   <span>📜</span>
                   <span>Degree Pass (ডিগ্রী পাস)</span>
                 </button>
-                <button id="subtab-academic-masters" onclick="switchAcademicSubTab('Master\'s')" class="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-2 cursor-pointer transition font-medium shrink-0">
+                <button id="subtab-academic-masters" type="button" onclick="switchAcademicSubTab('Master\'s')" class="py-2 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 cursor-pointer transition font-medium">
                   <span>📚</span>
                   <span>Master's (মাস্টার্স)</span>
                 </button>
-                <button id="subtab-academic-pro" onclick="switchAcademicSubTab('Professional')" class="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-2 cursor-pointer transition font-medium shrink-0">
+                <button id="subtab-academic-pro" type="button" onclick="switchAcademicSubTab('Professional')" class="py-2 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 cursor-pointer transition font-medium">
                   <span>💼</span>
                   <span>Professional (প্রফেশনাল)</span>
                 </button>
-                <button id="subtab-academic-links" onclick="switchAcademicSubTab('Portal Links')" class="py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-2 cursor-pointer transition font-medium shrink-0">
+                <button id="subtab-academic-links" type="button" onclick="switchAcademicSubTab('Portal Links')" class="hidden py-2 px-3 rounded-xl bg-slate-100 text-slate-700">
                   <span>🔗</span>
                   <span>Result Portals Links</span>
                 </button>
               </div>
 
-              <!-- Quick Section Jumps -->
-              <div class="flex items-center gap-2 text-xs shrink-0">
-                <a href="#academic-schedule-table-section" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold transition cursor-pointer">
-                  <span>📊</span>
-                  <span>Schedule List</span>
-                </a>
-                <a href="#entry-portal-section" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold transition cursor-pointer">
-                  <span>✏️</span>
-                  <span>Entry Form</span>
-                </a>
+              <!-- Year Filter Only (Simple & Direct) -->
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <label for="static-filter-year" class="text-[11px] font-bold text-slate-700 whitespace-nowrap">২. সাল ফিল্টার (Year):</label>
+                <input id="static-filter-year" oninput="onSimpleYearFilterInput(this.value)" type="text" placeholder="e.g. 2024 বা 2025" class="w-36 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600 focus:bg-white transition" />
+                <button type="button" onclick="clearAcademicFilters()" class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer" title="Reset Year Filter">
+                  ✕ Reset
+                </button>
+                <!-- Hidden legacy filter inputs maintained for backward compatibility -->
+                <div class="hidden">
+                  <select id="static-filter-program" onchange="filterAcademicRecords()">
+                    <option value="ALL">All Programs (সকল)</option>
+                    <option value="Honours">Honours (অনার্স)</option>
+                    <option value="Degree Pass">Degree Pass (ডিগ্রি পাস)</option>
+                    <option value="Master's">Master's (মাস্টার্স)</option>
+                    <option value="Professional">Professional (প্রফেশনাল)</option>
+                  </select>
+                  <input id="static-filter-search" oninput="filterAcademicRecords()" type="text" />
+                </div>
               </div>
-            </div>
-
-            <!-- Row 2: Unified Filter Controls Bar (Moved from former left red box) -->
-            <div class="flex flex-wrap items-center gap-3 pt-0.5 text-xs">
-              <div class="flex items-center gap-1.5 text-slate-600 font-bold text-[11px] whitespace-nowrap">
-                <span>🔍 Filter &amp; Search:</span>
-              </div>
-
-              <!-- Filter Select: Program -->
-              <div class="min-w-[170px] flex-1 sm:flex-initial">
-                <select id="static-filter-program" onchange="filterAcademicRecords()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-600 focus:bg-white transition cursor-pointer">
-                  <option value="ALL">All Programs (সকল)</option>
-                  <option value="Honours">Honours (অনার্স)</option>
-                  <option value="Degree Pass">Degree Pass (ডিগ্রি পাস)</option>
-                  <option value="Master's">Master's (মাস্টার্স)</option>
-                  <option value="Professional">Professional (প্রফেশনাল)</option>
-                </select>
-              </div>
-
-              <!-- Multi Select (Filter by Year) -->
-              <div class="min-w-[130px] flex-1 sm:flex-initial">
-                <input id="static-filter-year" oninput="filterAcademicRecords()" type="text" placeholder="Filter by Year (2024)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-600 focus:bg-white transition" />
-              </div>
-
-              <!-- Search Keywords -->
-              <div class="min-w-[220px] flex-1">
-                <input id="static-filter-search" oninput="filterAcademicRecords()" type="text" placeholder="Search keywords (routine, remarks, part...)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition" />
-              </div>
-
-              <!-- Reset / Clear Filters -->
-              <button type="button" onclick="clearAcademicFilters()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer" title="Reset Filters">
-                <span>✕</span>
-                <span>Reset</span>
-              </button>
             </div>
           </div>
 
-          <!-- 3. Full-Width Workspace Layout: Tables & Entry Portal -->
-          <div class="space-y-5 w-full">
-            
-            <!-- Card 1: Static Schedule Configuration Table -->
-              <div id="academic-schedule-table-section" class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs space-y-3.5">
-                <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 gap-3">
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg">🎓</span>
-                    <div>
-                      <h4 class="text-xs sm:text-sm font-bold text-slate-900">Configure Static Schedule</h4>
-                      <p class="text-[10px] text-slate-500">প্রোগ্রাম, বর্ষ/পার্ট ও শিক্ষাবর্ষ নির্বাচন করে তথ্য এন্ট্রি বা আপডেট করুন</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span id="academic-static-count-badge" class="bg-blue-100 text-blue-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0 Records</span>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center justify-between gap-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
-                  <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold text-slate-600">Bulk Actions:</span>
-                    <button type="button" onclick="previewCurrentFormCard()" class="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs px-2.5 py-1 rounded-lg font-bold shadow-2xs transition">
-                      + Edit
-                    </button>
-                    <button type="button" onclick="clearAcademicStaticForm()" class="bg-white hover:bg-rose-50 border border-slate-300 text-rose-700 text-xs px-2.5 py-1 rounded-lg font-bold shadow-2xs transition">
-                      Clear
-                    </button>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold text-slate-600">Sort:</span>
-                    <button type="button" onclick="loadAcademicStaticList()" class="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs px-2.5 py-1 rounded-lg font-semibold shadow-2xs">
-                      Sort Static Schedule
-                    </button>
-                  </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
-                        <th class="p-3">Program</th>
-                        <th class="p-3">Part / Year</th>
-                        <th class="p-3">Semester</th>
-                        <th class="p-3">Exam Year</th>
-                        <th class="p-3">Exam Date</th>
-                        <th class="p-3">Probable Result</th>
-                        <th class="p-3">Published?</th>
-                        <th class="p-3">Printed?</th>
-                        <th class="p-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-academic-static-tbody" class="divide-y divide-slate-100 text-slate-700">
-                      <tr><td colspan="9" class="p-6 text-center text-slate-400">Loading stored schedules...</td></tr>
-                    </tbody>
-                  </table>
+          <!-- Step 2: Simple Exam Entry Form with Calendar Date Pickers & Submit -->
+          <div id="entry-portal-section" class="bg-white rounded-2xl p-4 sm:p-5 border-2 border-blue-200/80 shadow-xs space-y-4">
+            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-200 gap-3 bg-blue-50/50 -m-4 sm:-m-5 mb-2 p-4 sm:p-5 rounded-t-2xl">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl" id="academic-form-icon">🎓</span>
+                <div>
+                  <h4 id="academic-form-title" class="text-sm font-bold text-slate-900">Configure Honours (অনার্স) Examination &amp; Results Schedule</h4>
+                  <p class="text-[11px] text-slate-600">বর্ষ/পর্ব ও পরীক্ষার সাল নির্বাচন করে ক্যালেন্ডার (📅) থেকে সহজে তারিখ ইনপুট দিন এবং <strong>Submit</strong> করুন</p>
                 </div>
               </div>
 
-              <!-- Card 2: Result Configuration Table -->
-              <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs space-y-3.5">
-                <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 gap-3">
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg">📊</span>
-                    <div>
-                      <h4 class="text-xs sm:text-sm font-bold text-slate-900">Result Configuration</h4>
-                      <p class="text-[10px] text-slate-500">ফলাফল, বর্ষ/পার্ট ও প্রকাশের তথ্য এবং অফিশিয়াল পোর্টাল ভিউ</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold text-slate-600">বর্ষ/পর্ব (Part/Year):</span>
-                    <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Part 1 (১ম বর্ষ)</span>
-                  </div>
+              <!-- Part / Course / Semester Selectors right in the Header -->
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div id="static-course-selector-wrapper" class="hidden flex items-center gap-1.5">
+                  <span class="text-[11px] font-bold text-slate-700">কোর্স (Course):</span>
+                  <select id="static-course-selector" onchange="onAcademicPartChange()" class="bg-white border border-teal-400 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-teal-600 font-bold cursor-pointer max-w-[260px]">
+                  </select>
                 </div>
+                <div id="static-part-selector-wrapper" class="flex items-center gap-1.5">
+                  <span class="text-[11px] font-bold text-slate-700">বর্ষ/পর্ব (Part/Year):</span>
+                  <select id="static-part-selector" onchange="onAcademicPartChange()" class="bg-white border border-blue-400 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-blue-600 font-bold cursor-pointer">
+                  </select>
+                </div>
+                <div id="static-semester-selector-wrapper" class="hidden flex items-center gap-1.5">
+                  <span class="text-[11px] font-bold text-slate-700">সেমিস্টার (Semester):</span>
+                  <select id="static-semester-selector" onchange="onAcademicSemesterChange()" class="bg-white border border-amber-400 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-600 font-bold cursor-pointer">
+                  </select>
+                </div>
+              </div>
+            </div>
 
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
-                        <th class="p-2.5">Program</th>
-                        <th class="p-2.5">Type / Part</th>
-                        <th class="p-2.5">Static Date</th>
-                        <th class="p-2.5">Publish Status</th>
-                        <th class="p-2.5">Re-scrutiny Deadline</th>
-                        <th class="p-2.5 text-right">Portal Link</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 text-slate-700">
-                      <tr class="hover:bg-slate-50">
-                        <td class="p-2.5 font-bold">Honours (অনার্স)</td>
-                        <td class="p-2.5 text-blue-700 font-semibold">১ম বর্ষ (Part 1)</td>
-                        <td class="p-2.5">১৫ মে ২০২৪</td>
-                        <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">প্রকাশিত (Yes)</span></td>
-                        <td class="p-2.5">১৫ সেপ্টেম্বর ২০২৪</td>
-                        <td class="p-2.5 text-right"><a href="http://103.113.200.68/nu-app/" target="_blank" class="text-blue-600 hover:underline font-bold text-[11px]">View Portal ↗</a></td>
-                      </tr>
-                      <tr class="hover:bg-slate-50">
-                        <td class="p-2.5 font-bold">Degree Pass (ডিগ্রী পাস)</td>
-                        <td class="p-2.5 text-blue-700 font-semibold">২য় বর্ষ (Part 2)</td>
-                        <td class="p-2.5">০১ জুলাই ২০২৪</td>
-                        <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">অপেক্ষমাণ (No)</span></td>
-                        <td class="p-2.5">১০ অক্টোবর ২০২৪</td>
-                        <td class="p-2.5 text-right"><a href="http://103.113.200.68/nu-app/" target="_blank" class="text-blue-600 hover:underline font-bold text-[11px]">View Portal ↗</a></td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <form id="academic-static-form" onsubmit="submitAcademicStatic(event)" class="space-y-4 pt-2">
+              
+              <!-- Group 1: পরীক্ষার সাল ও পরিচিতি -->
+              <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <span class="text-xs font-bold text-blue-900">📌 ১. পরীক্ষার সাল ও বেসিক তথ্য (Exam Year &amp; Basic Info)</span>
+                  <span class="text-[10px] text-rose-600 font-bold">* পরীক্ষার সাল আবশ্যক</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📅 পরীক্ষার সাল (Exam Year) <span class="text-rose-500">*</span>:</label>
+                    <input id="static-exam-year" type="text" required placeholder="e.g. 2024 বা 2025" class="w-full bg-white border border-blue-400 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🏷️ কোর্সের বাংলা নাম (ঐচ্ছিক):</label>
+                    <input id="static-program-name-bn" type="text" placeholder="e.g. অনার্স (সম্মান)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🌐 নোটিশ লিংক (Source Notice URL - ঐচ্ছিক):</label>
+                    <input id="static-source-url" type="text" placeholder="https://www.nu.ac.bd/uploads/notice.pdf" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                  </div>
                 </div>
               </div>
 
-              <!-- Card 3: Entry Portal (Main Input Form) -->
-              <div id="entry-portal-section" class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-2xs space-y-5">
-                <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 gap-3">
-                  <div class="flex items-center gap-2">
-                    <span class="text-xl" id="academic-form-icon">🎓</span>
-                    <div>
-                      <h4 id="academic-form-title" class="text-sm font-bold text-slate-900">Entry Portal — Configure Academic Examination &amp; Results Schedule</h4>
-                      <p class="text-[11px] text-slate-500">প্রোগ্রাম, বর্ষ/পার্ট ও শিক্ষাবর্ষ নির্বাচন করে তথ্য এন্ট্রি বা আপডেট করুন</p>
+              <!-- Group 2: ইনকোর্স ও ফরম পূরণের তারিখ (With Calendar Date Pickers) -->
+              <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <span class="text-xs font-bold text-indigo-900">📝 ২. ইনকোর্স ও ফরম পূরণ তারিখ (In-Course &amp; Form Fill-up Dates)</span>
+                  <span class="text-[10px] text-blue-700 font-semibold">📅 ডানপাশের ক্যালেন্ডার থেকে তারিখ সিলেক্ট করুন</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📝 ইনকোর্স শুরুর তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-incourse-date" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-incourse-date" onchange="applyAcademicDatePicker(this, 'static-incourse-date')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
                     </div>
                   </div>
-                  <div class="flex flex-wrap items-center gap-3">
-                    <div id="static-course-selector-wrapper" class="hidden flex items-center gap-1.5">
-                      <span class="text-[11px] font-bold text-slate-600">কোর্স (Course):</span>
-                      <select id="static-course-selector" onchange="onAcademicPartChange()" class="bg-teal-50 border border-teal-300 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:bg-white focus:outline-none focus:border-teal-600 font-bold cursor-pointer max-w-[280px]">
-                        <!-- Dynamically populated with 5 branches & 18 courses -->
-                      </select>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">⏰ ইনকোর্স শেষ তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-last-incourse" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-last-incourse" onchange="applyAcademicDatePicker(this, 'static-last-incourse')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
                     </div>
-                    <div id="static-part-selector-wrapper" class="flex items-center gap-1.5">
-                      <span class="text-[11px] font-bold text-slate-600">বর্ষ/পর্ব (Part/Year):</span>
-                      <select id="static-part-selector" onchange="onAcademicPartChange()" class="bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:bg-white focus:outline-none focus:border-blue-600 font-bold cursor-pointer">
-                        <!-- Dynamically populated -->
-                      </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📋 ফরম পূরণ শুরুর তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-form-fillup-start" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-form-fillup-start" onchange="applyAcademicDatePicker(this, 'static-form-fillup-start')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
                     </div>
-                    <div id="static-semester-selector-wrapper" class="hidden flex items-center gap-1.5">
-                      <span class="text-[11px] font-bold text-slate-600">সেমিস্টার (Semester):</span>
-                      <select id="static-semester-selector" onchange="onAcademicSemesterChange()" class="bg-amber-50 border border-amber-300 text-slate-900 text-xs rounded-xl px-3 py-1.5 focus:bg-white focus:outline-none focus:border-amber-600 font-bold cursor-pointer">
-                        <!-- Dynamically populated for Professional -->
-                      </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">⏳ ফরম পূরণ শেষ তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-form-fillup" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-form-fillup" onchange="applyAcademicDatePicker(this, 'static-form-fillup')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
                     </div>
                   </div>
                 </div>
-
-                <form id="academic-static-form" onsubmit="submitAcademicStatic(event)" class="space-y-6">
-                  
-                  <!-- Section A: কোর্স ও শিক্ষাবর্ষ পরিচিতি -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-                        <span>📌</span>
-                        <span>সেকশন A: শিক্ষাবর্ষ ও বেসিক পরিচিতি (Program &amp; Examination Year)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Core Identity</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📅 পরীক্ষার সাল (Exam Year) <span class="text-rose-500">*</span>:</label>
-                        <input id="static-exam-year" type="text" required placeholder="e.g. 2024 বা 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🏷️ কোর্সের বাংলা নাম (Display Title):</label>
-                        <input id="static-program-name-bn" type="text" placeholder="e.g. অনার্স (সম্মান)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🌐 সার্কুলার / নোটিশ লিংক (Source Notice URL):</label>
-                        <input id="static-source-url" type="text" placeholder="https://www.nu.ac.bd/uploads/notice.pdf" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section B: ইনকোর্স পরীক্ষা ও নম্বর এন্ট্রি -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-indigo-900 flex items-center gap-1.5">
-                        <span>📝</span>
-                        <span>সেকশন B: ইনকোর্স পরীক্ষা ও নম্বর এন্ট্রি (In-course Exam &amp; Marks Entry)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">In-course Phase</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📝 ইনকোর্স পরীক্ষার তারিখ / সময়সীমা:</label>
-                        <input id="static-incourse-date" type="text" placeholder="e.g. 15 Jan 2025 হতে 30 Jan 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">⏰ ইনকোর্স নম্বর এন্ট্রির শেষ তারিখ:</label>
-                        <input id="static-last-incourse" type="text" placeholder="e.g. 10 Feb 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section C: ফরম পূরণ ও সময়সীমা -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-teal-900 flex items-center gap-1.5">
-                        <span>📋</span>
-                        <span>সেকশন C: ফরম পূরণ ও সময়সীমা (Form Fill-up Milestones)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">EMS Portal Phase</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📋 ফরম পূরণ শুরুর তারিখ (Start Date):</label>
-                        <input id="static-form-fillup-start" type="text" placeholder="e.g. 01 March 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">⏳ ফরম পূরণ শেষ তারিখ (Deadline):</label>
-                        <input id="static-form-fillup" type="text" placeholder="e.g. 25 March 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section D: পরীক্ষার সময়সূচী ও প্রবেশপত্র -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-                        <span>📅</span>
-                        <span>সেকশন D: তত্ত্বীয় পরীক্ষার সময়সূচী ও প্রবেশপত্র (Exam Routine, Admit Card &amp; Duration)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Examination Phase</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📅 পরীক্ষা শুরুর তারিখ (Exam Date):</label>
-                        <input id="static-exam-date" type="text" placeholder="e.g. 15 May 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📜 পরীক্ষার রুটিন প্রকাশের তারিখ / লিংক:</label>
-                        <input id="static-routine-url" type="text" placeholder="e.g. 20 April 2025 বা URL" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🪪 প্রবেশপত্র (Admit Card) পাওয়ার তারিখ:</label>
-                        <input id="static-admit-card" type="text" placeholder="e.g. 05 May 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🏁 তত্ত্বীয় পরীক্ষা শেষের তারিখ (Last Exam):</label>
-                        <input id="static-last-exam" type="text" placeholder="e.g. 30 June 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section E: ব্যবহারিক পরীক্ষা ও নম্বর এন্ট্রি -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
-                        <span>🧪</span>
-                        <span>সেকশন E: ব্যবহারিক পরীক্ষা ও নম্বর এন্ট্রি (Practical Exam &amp; Marks Entry)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Practical Marks</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🧪 ব্যবহারিক পরীক্ষা শুরুর তারিখ:</label>
-                        <input id="static-practical-date" type="text" placeholder="e.g. 05 July 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">⏳ ব্যবহারিক নম্বর এন্ট্রির শেষ তারিখ:</label>
-                        <input id="static-last-practical" type="text" placeholder="e.g. 25 July 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section F: ফলাফল ও পুনর্নিরীক্ষণ কার্যক্রম -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
-                        <span>📊</span>
-                        <span>সেকশন F: ফলাফল ও পুনর্নিরীক্ষণ কার্যক্রম (Result Publication &amp; Re-scrutiny)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Results &amp; Re-scrutiny</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📊 সম্ভাব্য ফল প্রকাশের তারিখ (Probable Date):</label>
-                        <input id="static-prob-result" type="text" placeholder="e.g. 15 September 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📢 প্রকৃত ফল প্রকাশের তারিখ (Actual Date):</label>
-                        <input id="static-result-date" type="text" placeholder="e.g. 12 September 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">✅ ফলাফল প্রকাশিত হয়েছে? (Results Published):</label>
-                        <select id="static-results-published" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-bold">
-                          <option value="No">না (No) - প্রকাশিত হয়নি</option>
-                          <option value="Yes">হ্যাঁ (Yes) - প্রকাশিত হয়েছে</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🔍 পুনর্নিরীক্ষণ আবেদন শুরুর তারিখ:</label>
-                        <input id="static-rescrutiny-start" type="text" placeholder="e.g. 15 Sept 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">⏰ পুনর্নিরীক্ষণ আবেদনের শেষ তারিখ:</label>
-                        <input id="static-rescrutiny-apply" type="text" placeholder="e.g. 15 Oct 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📑 পুনর্নিরীক্ষণের ফল প্রকাশের তারিখ:</label>
-                        <input id="static-rescrutiny-result" type="text" placeholder="e.g. 30 November 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section G: সনদ/মার্কশিট প্রিন্টিং ও অফিসিয়াল পোর্টাল লিংক -->
-                  <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <span>📜</span>
-                        <span>সেকশন G: সনদ/মার্কশিট প্রিন্টিং ও অফিসিয়াল পোর্টাল লিংক (Official Portals)</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Documents &amp; Links</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">📜 সনদ/মার্কশিট/ট্রান্সক্রিপ্ট প্রিন্টিং তারিখ:</label>
-                        <input id="static-cert-printing" type="text" placeholder="e.g. 15 Dec 2025" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🖨️ প্রিন্ট স্ট্যাটাস (Printed Status):</label>
-                        <select id="static-printed-status" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-bold">
-                          <option value="No">না (No) - প্রিন্ট হয়নি / অপেক্ষমান</option>
-                          <option value="Yes">হ্যাঁ (Yes) - প্রিন্ট সম্পন্ন / বিতরণ চলছে</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🔗 Revaluation Result Link (পুনর্নিরীক্ষণ লিংক):</label>
-                        <input id="static-reval-link" type="text" value="https://results.nu.ac.bd/" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">🏫 College-wise Result Link (কলেজভিত্তিক রেজাল্ট):</label>
-                        <input id="static-college-link" type="text" value="http://103.113.200.68/nu-app/search.php" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
-                      </div>
-                      <div class="sm:col-span-2 lg:col-span-4">
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">💡 বিশেষ নির্দেশনা / দ্রষ্টব্য (Official Remarks):</label>
-                        <textarea id="static-notes" rows="2" placeholder="e.g. ফরম পূরণের পর প্রিন্ট কপি সহ ফি স্ব স্ব কলেজে নির্ধারিত সময়ের মধ্যে জমা দিতে হবে।" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600"></textarea>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Form Action Buttons -->
-                  <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <button type="submit" id="btn-save-academic-static" class="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer">
-                        <span>💾</span>
-                        <span>Submit &amp; Update Schedule</span>
-                      </button>
-                      <button type="button" onclick="previewCurrentFormCard()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
-                        <span>👁️</span>
-                        <span>Preview Student Card</span>
-                      </button>
-                      <button type="button" onclick="onAcademicPartChange()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer">
-                        <span>🔄 Load Saved Data</span>
-                      </button>
-                      <button type="button" onclick="clearAcademicStaticForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer">
-                        <span>Clear Form</span>
-                      </button>
-                    </div>
-                    <span id="academic-static-status-msg" class="text-xs font-semibold text-slate-500"></span>
-                  </div>
-                </form>
               </div>
+
+              <!-- Group 3: তত্ত্বীয় ও ব্যবহারিক পরীক্ষার তারিখ (With Calendar Date Pickers) -->
+              <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <span class="text-xs font-bold text-teal-900">📅 ৩. পরীক্ষা, রুটিন, প্রবেশপত্র ও ব্যবহারিক তারিখ (Exam &amp; Practical Dates)</span>
+                  <span class="text-[10px] text-teal-700 font-semibold">📅 ক্যালেন্ডার যুক্ত</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📅 পরীক্ষা শুরুর তারিখ (Exam Date):</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-exam-date" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-exam-date" onchange="applyAcademicDatePicker(this, 'static-exam-date')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📜 রুটিন প্রকাশের তারিখ / লিংক:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-routine-url" type="text" placeholder="YYYY-MM-DD বা লিংক" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-routine-url" onchange="applyAcademicDatePicker(this, 'static-routine-url')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🪪 প্রবেশপত্র (Admit Card) তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-admit-card" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-admit-card" onchange="applyAcademicDatePicker(this, 'static-admit-card')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🏁 তত্ত্বীয় পরীক্ষা শেষের তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-last-exam" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-last-exam" onchange="applyAcademicDatePicker(this, 'static-last-exam')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🧪 ব্যবহারিক পরীক্ষা শুরুর তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-practical-date" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-practical-date" onchange="applyAcademicDatePicker(this, 'static-practical-date')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">⏳ ব্যবহারিক নম্বর শেষ তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-last-practical" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-last-practical" onchange="applyAcademicDatePicker(this, 'static-last-practical')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group 4: ফলাফল ও পুনর্নিরীক্ষণ (With Calendar Date Pickers) -->
+              <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <span class="text-xs font-bold text-purple-900">📊 ৪. ফলাফল প্রকাশ ও পুনর্নিরীক্ষণ তারিখ (Result &amp; Re-scrutiny Dates)</span>
+                  <span class="text-[10px] text-purple-700 font-semibold">📅 ক্যালেন্ডার যুক্ত</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📊 সম্ভাব্য ফল প্রকাশের তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-prob-result" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-prob-result" onchange="applyAcademicDatePicker(this, 'static-prob-result')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📢 প্রকৃত ফল প্রকাশের তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-result-date" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-result-date" onchange="applyAcademicDatePicker(this, 'static-result-date')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">✅ ফলাফল প্রকাশিত হয়েছে? (Published?):</label>
+                    <select id="static-results-published" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-bold">
+                      <option value="No">না (No) - প্রকাশিত হয়নি</option>
+                      <option value="Yes">হ্যাঁ (Yes) - প্রকাশিত হয়েছে</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🔍 পুনর্নিরীক্ষণ শুরুর তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-rescrutiny-start" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-rescrutiny-start" onchange="applyAcademicDatePicker(this, 'static-rescrutiny-start')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">⏰ পুনর্নিরীক্ষণ শেষ তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-rescrutiny-apply" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-rescrutiny-apply" onchange="applyAcademicDatePicker(this, 'static-rescrutiny-apply')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📑 পুনর্নিরীক্ষণ ফল প্রকাশের তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-rescrutiny-result" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-rescrutiny-result" onchange="applyAcademicDatePicker(this, 'static-rescrutiny-result')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group 5: সনদ প্রিন্টিং ও বিশেষ মন্তব্য (With Calendar Date Picker) -->
+              <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <span class="text-xs font-bold text-slate-900">📜 ৫. সনদ/মার্কশিট প্রিন্টিং ও মন্তব্য (Certificate Printing &amp; Remarks)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">📜 সনদ/মার্কশিট প্রিন্টিং তারিখ:</label>
+                    <div class="flex items-center gap-1">
+                      <input id="static-cert-printing" type="text" placeholder="YYYY-MM-DD / তারিখ" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                      <input type="date" data-target-input="static-cert-printing" onchange="applyAcademicDatePicker(this, 'static-cert-printing')" class="academic-date-picker w-9 h-9 shrink-0 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-xl px-1.5 text-xs cursor-pointer" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🖨️ প্রিন্ট স্ট্যাটাস (Printed?):</label>
+                    <select id="static-printed-status" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-bold">
+                      <option value="No">না (No) - অপেক্ষমান</option>
+                      <option value="Yes">হ্যাঁ (Yes) - প্রিন্ট সম্পন্ন</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🔗 ফলাফল লিংক (Result Link):</label>
+                    <input id="static-reval-link" type="text" value="https://results.nu.ac.bd/" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">🏫 কলেজভিত্তিক ফলাফল লিংক:</label>
+                    <input id="static-college-link" type="text" value="http://103.113.200.68/nu-app/search.php" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600" />
+                  </div>
+                  <div class="sm:col-span-2 lg:col-span-4">
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">💡 বিশেষ নির্দেশনা / মন্তব্য (Remarks - ঐচ্ছিক):</label>
+                    <textarea id="static-notes" rows="2" placeholder="e.g. ফরম পূরণের পর প্রিন্ট কপি সহ ফি স্ব স্ব কলেজে নির্ধারিত সময়ের মধ্যে জমা দিতে হবে।" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Simple Submit Bar -->
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="submit" id="btn-save-academic-static" class="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer">
+                    <span>✅</span>
+                    <span>Submit Exam Data (সংরক্ষণ করুন)</span>
+                  </button>
+                  <button type="button" onclick="previewCurrentFormCard()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+                    <span>👁️</span>
+                    <span>Preview</span>
+                  </button>
+                  <button type="button" onclick="clearAcademicStaticForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer">
+                    <span>Clear Form</span>
+                  </button>
+                </div>
+                <span id="academic-static-status-msg" class="text-xs font-semibold text-slate-600"></span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 3: Dedicated FAQ Q&A Entry Section (Adds FAQ directly to FAQ Panel; accessible to Exam Entry Staff & Admins) -->
+          <div id="faq-qa-entry-section" class="bg-white rounded-2xl p-4 sm:p-5 border-2 border-emerald-200/80 shadow-xs space-y-4">
+            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-emerald-100 gap-2 bg-emerald-50/50 -m-4 sm:-m-5 mb-2 p-4 sm:p-5 rounded-t-2xl">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl">❓</span>
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900">FAQ Q&amp;A Entry (FAQ প্যানেলে প্রশ্ন ও উত্তর যুক্ত করুন)</h4>
+                  <p class="text-[11px] text-slate-600">এখানে প্রশ্ন ও উত্তর লিখে <strong>Submit FAQ</strong> বাটনে ক্লিক করলে তা সরাসরি চ্যাটবটের FAQ প্যানেলে যুক্ত হবে</p>
+                </div>
+              </div>
+              <span class="bg-emerald-100 text-emerald-900 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-300">
+                Live FAQ Panel Sync
+              </span>
+            </div>
+
+            <form id="admin-faq-form" onsubmit="submitAdminFaqForm(event)" class="space-y-3.5 text-xs pt-1">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">১. ক্যাটাগরি নির্বাচন করুন (FAQ Category) <span class="text-rose-500">*</span>:</label>
+                  <select id="admin-faq-category" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:bg-white focus:outline-none focus:border-emerald-600">
+                    <option value="পরীক্ষা সংক্রান্ত">📝 পরীক্ষা সংক্রান্ত (Examinations &amp; Routines)</option>
+                    <option value="রেজাল্ট সংক্রান্ত">📊 রেজাল্ট সংক্রান্ত (Results &amp; Re-scrutiny)</option>
+                    <option value="ভর্তি সংক্রান্ত">🏛️ ভর্তি সংক্রান্ত (Admissions)</option>
+                    <option value="সার্টিফিকেট ও সেবা">📜 সার্টিফিকেট ও সেবা (Certificates &amp; Services)</option>
+                    <option value="ফি ও সোনালী সেবা">💳 ফি ও সোনালী সেবা (Fees &amp; Sonali Seba)</option>
+                    <option value="সাধারণ তথ্য">ℹ️ সাধারণ তথ্য (General Information)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">২. কীওয়ার্ড / ট্যাগ (Keywords - ঐচ্ছিক):</label>
+                  <input id="admin-faq-keywords" type="text" placeholder="e.g. অনার্স, ফরম পূরণ, ফলাফল" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-emerald-600" />
+                  <input id="admin-faq-source-url" type="hidden" value="" />
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[11px] font-bold text-slate-700">৩. প্রশ্ন লিখুন (FAQ Question) <span class="text-rose-500">*</span>:</label>
+                  <button type="button" onclick="checkAdminFaqSimilarity()" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded cursor-pointer transition">
+                    🔍 Check Duplicate
+                  </button>
+                </div>
+                <textarea id="admin-faq-question" oninput="debounceAdminFaqSimilarity()" rows="2" required placeholder="e.g. ২০২৪ সালের অনার্স ২য় বর্ষ পরীক্ষার ফরম পূরণ কবে শুরু হবে?" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-emerald-600"></textarea>
+              </div>
+
+              <!-- Real-time Similarity Alert Box -->
+              <div id="admin-faq-sim-box" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold flex items-center gap-1.5 text-xs text-amber-800">
+                    <span>⚠️</span>
+                    <span>সতর্কবার্তা: ডাটাবেজে একটি সাদৃশ্যপূর্ণ প্রশ্ন বিদ্যমান রয়েছে! (সাদৃশ্য: <span id="admin-faq-sim-pct" class="font-extrabold text-rose-700">--</span>%)</span>
+                  </span>
+                  <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded">Similarity Match</span>
+                </div>
+                <div class="p-2.5 bg-white/80 rounded-lg border border-amber-200 text-[11px] space-y-1">
+                  <p><strong class="text-slate-800">বিদ্যমান প্রশ্ন:</strong> <span id="admin-faq-sim-question" class="text-slate-700"></span></p>
+                  <p><strong class="text-slate-800">বিদ্যমান উত্তর:</strong> <span id="admin-faq-sim-answer" class="text-slate-600 line-clamp-2"></span></p>
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer pt-1 text-xs font-bold text-amber-950">
+                  <input type="checkbox" id="admin-faq-force" class="rounded border-amber-400 text-amber-700 focus:ring-amber-500 w-4 h-4 cursor-pointer" />
+                  <span>সাদৃশ্য থাকা সত্ত্বেও নতুন প্রশ্ন হিসেবে FAQ প্যানেলে যোগ করুন (Force Insert)</span>
+                </label>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">৪. উত্তর লিখুন (FAQ Answer) <span class="text-rose-500">*</span>:</label>
+                <textarea id="admin-faq-answer" rows="3" required placeholder="সঠিক ও সংক্ষিপ্ত উত্তর লিখুন যা শিক্ষার্থীরা FAQ প্যানেলে দেখতে পাবে..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-emerald-600"></textarea>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <div class="flex items-center gap-2">
+                  <button type="submit" id="btn-submit-faq-entry" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    <span>✅</span>
+                    <span>Submit FAQ to Panel (FAQ যুক্ত করুন)</span>
+                  </button>
+                  <button type="button" onclick="clearAdminFaqForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3.5 py-2.5 rounded-xl transition cursor-pointer">
+                    Clear
+                  </button>
+                </div>
+                <span id="admin-faq-status-msg" class="text-xs font-semibold"></span>
+              </div>
+            </form>
+
+            <!-- Live Preview of Recent FAQ Panel Questions -->
+            <div class="pt-3 border-t border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <span>📋</span>
+                  <span>Current FAQ Panel Items (সর্বশেষ সংযোজিত প্রশ্নোত্তর)</span>
+                </span>
+                <button type="button" onclick="loadRecentFaqPanelEntries()" class="text-[11px] text-emerald-700 hover:underline font-bold cursor-pointer">🔄 Refresh FAQ List</button>
+              </div>
+              <div id="faq-entry-recent-list" class="max-h-48 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50/50 text-xs">
+                <div class="p-3 text-center text-slate-400">Loading FAQ panel items...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Saved Exam Schedules Table (Filtered by Selected Exam & Year) -->
+          <div id="academic-schedule-table-section" class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs space-y-3">
+            <div class="flex flex-wrap items-center justify-between pb-2.5 border-b border-slate-100 gap-3">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">📋</span>
+                <div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900">Saved Exam Schedules (সংরক্ষিত পরীক্ষার তালিকা)</h4>
+                  <p class="text-[10px] text-slate-500">যেকোনো সারির <strong>✏️ Edit</strong> বাটনে ক্লিক করলে উপরের ফর্মে তথ্য লোড হবে</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="academic-static-count-badge" class="bg-blue-100 text-blue-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">0 Records</span>
+                <button type="button" onclick="loadAcademicStaticList()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-1 rounded-lg font-semibold transition cursor-pointer">
+                  🔄 Refresh
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider">
+                    <th class="p-3">Exam Name</th>
+                    <th class="p-3">Part / Year</th>
+                    <th class="p-3">Semester</th>
+                    <th class="p-3">Exam Year</th>
+                    <th class="p-3">Exam Date</th>
+                    <th class="p-3">Probable Result</th>
+                    <th class="p-3">Published?</th>
+                    <th class="p-3">Printed?</th>
+                    <th class="p-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-academic-static-tbody" class="divide-y divide-slate-100 text-slate-700">
+                  <tr><td colspan="9" class="p-6 text-center text-slate-400">Loading stored schedules...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -4969,16 +4918,26 @@
       const roleBadge = document.getElementById("admin-role-badge");
       if (roleBadge) {
         roleBadge.innerText = user.role;
-        roleBadge.className = user.role === "SUPER_ADMIN" ? "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800" : (user.role === "ADMIN" ? "px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800" : "px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800");
+        roleBadge.className = user.role === "SUPER_ADMIN"
+          ? "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"
+          : (user.role === "ADMIN"
+            ? "px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800"
+            : (user.role === "EXAM_ENTRY"
+              ? "px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"
+              : "px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800"));
       }
       
       const deptEl = document.getElementById("admin-dept-display");
       if (deptEl) deptEl.innerText = user.department || "All Departments";
 
       const isSolver = (user.role === "SOLVER");
+      const isExamEntry = (user.role === "EXAM_ENTRY");
       const isAdmin = (user.role === "ADMIN" || user.role === "SUPER_ADMIN");
 
-      // Menus visibility: Solver ONLY gets 'Token Support' menu!
+      // Menus visibility:
+      // - Solver ONLY gets 'Token Support Center'
+      // - Exam Entry Staff ('EXAM_ENTRY') ONLY gets '🎓 Academic Exam & Results Hub' (which includes FAQ Q&A Entry)
+      // - Admin / Super Admin gets all tabs
       const tabTokensBtn = document.getElementById("tab-btn-tokens");
       const tabSitemapBtn = document.getElementById("tab-btn-sitemap");
       const tabAIEngineBtn = document.getElementById("tab-btn-ai-engine");
@@ -4989,25 +4948,42 @@
       const tabBackupsBtn = document.getElementById("tab-btn-backups");
       const tabApiHealthBtn = document.getElementById("tab-btn-api-health");
       const headerApiHealthBtn = document.getElementById("btn-api-health-header");
+      const headerUpdateRecentBtn = document.getElementById("btn-update-recent-header");
 
-      if (tabTokensBtn) tabTokensBtn.style.display = "flex";
+      if (tabTokensBtn) tabTokensBtn.style.display = (isSolver || isAdmin) ? "flex" : "none";
       if (tabSitemapBtn) tabSitemapBtn.style.display = isAdmin ? "flex" : "none";
       if (tabAIEngineBtn) tabAIEngineBtn.style.display = isAdmin ? "flex" : "none";
       if (tabQAKnowledgeBtn) tabQAKnowledgeBtn.style.display = isAdmin ? "flex" : "none";
-      if (tabAcademicStaticBtn) tabAcademicStaticBtn.style.display = isAdmin ? "flex" : "none";
+      if (tabAcademicStaticBtn) tabAcademicStaticBtn.style.display = (isExamEntry || isAdmin) ? "flex" : "none";
       if (tabUsersBtn) tabUsersBtn.style.display = isAdmin ? "flex" : "none";
       if (tabLogsBtn) tabLogsBtn.style.display = isAdmin ? "flex" : "none";
       if (tabBackupsBtn) tabBackupsBtn.style.display = isAdmin ? "flex" : "none";
       if (tabApiHealthBtn) tabApiHealthBtn.style.display = isAdmin ? "flex" : "none";
       if (headerApiHealthBtn) headerApiHealthBtn.style.display = isAdmin ? "flex" : "none";
+      if (headerUpdateRecentBtn) headerUpdateRecentBtn.style.display = isAdmin ? "flex" : "none";
 
       document.getElementById("admin-modal").classList.remove("hidden");
-      switchAdminTab("tokens");
+      if (isExamEntry) {
+        switchAdminTab("academic_static");
+      } else {
+        switchAdminTab("tokens");
+      }
     }
 
     // --- User & Solver Account Management ---
     function openCreateUserModal() {
       document.getElementById("create-user-modal").classList.remove("hidden");
+    }
+
+    function openCreateExamEntryUserModal() {
+      const modal = document.getElementById("create-user-modal");
+      if (modal) modal.classList.remove("hidden");
+      const roleSel = document.getElementById("new-user-role");
+      const deptSel = document.getElementById("new-user-department");
+      const fullInput = document.getElementById("new-user-fullname");
+      if (roleSel) roleSel.value = "EXAM_ENTRY";
+      if (deptSel) deptSel.value = "Controller of Examination Section";
+      if (fullInput && !fullInput.value) fullInput.value = "Exam & FAQ Entry Officer";
     }
 
     function closeCreateUserModal() {
@@ -5090,6 +5066,7 @@
           const roleBadgeColors = {
             "SUPER_ADMIN": "bg-amber-100 text-amber-800",
             "ADMIN": "bg-purple-100 text-purple-800",
+            "EXAM_ENTRY": "bg-emerald-100 text-emerald-800 border border-emerald-300",
             "SOLVER": "bg-blue-100 text-blue-800",
             "USER": "bg-slate-100 text-slate-700"
           };
@@ -5557,16 +5534,24 @@
     function switchAdminTab(tab) {
       const user = getAdminUser();
       const isSolver = user && user.role === "SOLVER";
+      const isExamEntry = user && user.role === "EXAM_ENTRY";
 
       // If user is SOLVER, restrict ALL other menus except 'tokens'
       if (isSolver && tab !== "tokens") {
         tab = "tokens";
       }
 
+      // If user is EXAM_ENTRY, restrict ALL other menus except 'academic_static'
+      if (isExamEntry && tab !== "academic_static") {
+        tab = "academic_static";
+      }
+
       // If a subtab is requested directly, open ai_engine and switch subtab
       if (["deep", "enrichment", "lab", "gaps", "crawl", "hermes"].includes(tab)) {
         if (isSolver) {
           tab = "tokens";
+        } else if (isExamEntry) {
+          tab = "academic_static";
         } else {
           currentAISubTab = tab;
           tab = "ai_engine";
@@ -7403,9 +7388,12 @@
         if (res.ok && result.status === "success") {
           if (statusMsg) {
             statusMsg.className = "text-xs font-bold text-emerald-600";
-            statusMsg.innerText = `✅ নতুন প্রশ্নোত্তর সফলভাবে ডেটাবেজে যুক্ত হয়েছে (FAQ ID: #${result.faq_id})`;
+            statusMsg.innerText = `✅ নতুন প্রশ্নোত্তর সফলভাবে FAQ প্যানেলে যুক্ত হয়েছে (FAQ ID: #${result.faq_id})`;
           }
           clearAdminFaqForm();
+          if (typeof loadRecentFaqPanelEntries === "function") {
+            loadRecentFaqPanelEntries();
+          }
         } else if (result.status === "similar_exists") {
           const simBox = document.getElementById("admin-faq-sim-box");
           const simPct = document.getElementById("admin-faq-sim-pct");
@@ -7625,6 +7613,77 @@
     function initAcademicStaticUI() {
       switchAcademicSubTab(currentAcademicProgram || "Honours");
       loadAcademicStaticList();
+      loadRecentFaqPanelEntries();
+    }
+
+    function applyAcademicDatePicker(pickerEl, targetInputId) {
+      if (!pickerEl || !pickerEl.value) return;
+      const target = document.getElementById(targetInputId);
+      if (target) {
+        target.value = pickerEl.value;
+      }
+    }
+
+    function syncAcademicDatePickers() {
+      const pickers = document.querySelectorAll(".academic-date-picker");
+      pickers.forEach(picker => {
+        const targetId = picker.getAttribute("data-target-input");
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (!target || !target.value) {
+          picker.value = "";
+          return;
+        }
+        const raw = target.value.trim();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+          picker.value = raw;
+        } else {
+          const parsed = new Date(raw);
+          if (!isNaN(parsed.getTime())) {
+            const yyyy = parsed.getFullYear();
+            const mm = String(parsed.getMonth() + 1).padStart(2, "0");
+            const dd = String(parsed.getDate()).padStart(2, "0");
+            picker.value = `${yyyy}-${mm}-${dd}`;
+          } else {
+            picker.value = "";
+          }
+        }
+      });
+    }
+
+    function onSimpleYearFilterInput(val) {
+      filterAcademicRecords();
+      const cleanYr = (val || "").trim();
+      const yearInput = document.getElementById("static-exam-year");
+      if (yearInput && /^\d{4}$/.test(cleanYr)) {
+        yearInput.value = cleanYr;
+        onAcademicPartChange();
+      }
+    }
+
+    async function loadRecentFaqPanelEntries() {
+      const listEl = document.getElementById("faq-entry-recent-list");
+      if (!listEl) return;
+      try {
+        const res = await fetch("/api/v1/faqs");
+        const data = await res.json();
+        const faqs = Array.isArray(data) ? data : (data.faqs || data.data || []);
+        if (!faqs.length) {
+          listEl.innerHTML = `<div class="p-3 text-center text-slate-400">কোনো প্রশ্নোত্তর পাওয়া যায়নি।</div>`;
+          return;
+        }
+        const recent = faqs.slice(-15).reverse();
+        listEl.innerHTML = recent.map(item => `
+          <div class="p-2.5 hover:bg-white transition flex flex-col gap-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-emerald-800">${escapeHTML(item.question || "")}</span>
+              <span class="shrink-0 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">${escapeHTML(item.category || "সাধারণ তথ্য")}</span>
+            </div>
+            <p class="text-slate-600 text-[11px] line-clamp-2">${escapeHTML(item.answer || "")}</p>
+          </div>
+        `).join("");
+      } catch (e) {
+        listEl.innerHTML = `<div class="p-3 text-center text-rose-500">FAQ তালিকা লোড করা যায়নি।</div>`;
+      }
     }
 
     function switchAcademicSubTab(prog) {
@@ -7804,6 +7863,7 @@
       document.getElementById("static-reval-link").value = item.revaluation_result_url || item.revaluation_result_link || "https://results.nu.ac.bd/";
       document.getElementById("static-college-link").value = item.college_wise_result_url || item.collegewise_result_link || "http://103.113.200.68/nu-app/search.php";
       document.getElementById("static-notes").value = item.remarks || item.notes || "";
+      syncAcademicDatePickers();
     }
 
     function clearAcademicStaticForm(resetDefaults = true) {
@@ -7831,6 +7891,7 @@
       document.getElementById("static-reval-link").value = "https://results.nu.ac.bd/";
       document.getElementById("static-college-link").value = "http://103.113.200.68/nu-app/search.php";
       document.getElementById("static-notes").value = "";
+      syncAcademicDatePickers();
       if (resetDefaults) {
         const statusMsg = document.getElementById("academic-static-status-msg");
         if (statusMsg) statusMsg.innerText = "Form cleared.";

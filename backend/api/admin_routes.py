@@ -254,7 +254,7 @@ def create_system_user(payload: AdminCreateUserRequest, user: dict = Depends(req
 
         pwd_hash = hash_password(payload.password)
         now_str = datetime.utcnow().isoformat()
-        role = payload.role.upper() if payload.role.upper() in ["ADMIN", "SOLVER", "USER", "SUPER_ADMIN"] else "SOLVER"
+        role = payload.role.upper() if payload.role.upper() in ["ADMIN", "SOLVER", "EXAM_ENTRY", "USER", "SUPER_ADMIN"] else "SOLVER"
 
         with conn:
             cur = conn.execute("""
@@ -657,7 +657,7 @@ def get_admin_academic_exam(
 @router.post("/academic-exams", summary="Create or update an academic examination record")
 def create_or_update_academic_exam(
     payload: AcademicExamCreateUpdateRequest,
-    user: dict = Depends(get_current_user_required)
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
 ):
     username = user.get("username", "Admin")
     sql_store = get_sql_store()
@@ -672,7 +672,7 @@ def create_or_update_academic_exam(
 def update_admin_academic_exam(
     record_id: int,
     payload: AcademicExamCreateUpdateRequest,
-    user: dict = Depends(get_current_user_required)
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
 ):
     sql_store = get_sql_store()
     existing = sql_store.get_academic_exam_info_by_id(record_id)
@@ -691,7 +691,7 @@ def update_admin_academic_exam(
 @router.delete("/academic-exams/{record_id}", summary="Delete an academic examination record")
 def delete_admin_academic_exam(
     record_id: int,
-    user: dict = Depends(get_current_user_required)
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
 ):
     sql_store = get_sql_store()
     deleted = sql_store.delete_academic_exam_info(record_id)
@@ -724,7 +724,7 @@ def get_academic_static(
 @router.post("/academic-static", summary="Create or update static academic exam & result info")
 def upsert_academic_static(
     payload: AcademicStaticInfoRequest,
-    user: dict = Depends(get_current_user_required)
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
 ):
     sql_store = get_sql_store()
     saved = sql_store.upsert_academic_exam_info(payload.dict(), user_name=user.get("username", "Admin"))
@@ -735,7 +735,7 @@ def upsert_academic_static(
     }
 
 @router.delete("/academic-static/{entry_id}", summary="Delete academic schedule entry")
-def delete_academic_static(entry_id: int, user: dict = Depends(get_current_user_required)):
+def delete_academic_static(entry_id: int, user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))):
     sql_store = get_sql_store()
     deleted = sql_store.delete_academic_exam_info(entry_id)
     if not deleted:
@@ -756,7 +756,7 @@ class AdminCreateFAQRequest(BaseModel):
 @router.post("/faqs", summary="Add FAQ Question & Answer with Similarity Checking")
 def admin_add_faq_endpoint(
     payload: AdminCreateFAQRequest,
-    user: dict = Depends(require_roles([Role.ADMIN, Role.SUPER_ADMIN]))
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
 ):
     faq_service = get_faq_service()
     result = faq_service.add_faq_entry(
