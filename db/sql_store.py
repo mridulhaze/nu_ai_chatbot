@@ -262,6 +262,46 @@ class SQLStore:
                     res["has_liked"] = True
             return res
 
+    def update_faq_record(
+        self,
+        faq_id: int,
+        question: str,
+        answer: str,
+        category: str = "সাধারণ তথ্য",
+        keywords: str = ""
+    ) -> bool:
+        q_str = (question or "").strip()
+        a_str = (answer or "").strip()
+        c_str = (category or "সাধারণ তথ্য").strip()
+        kw_str = (keywords or "").strip()
+        base_hash = self.compute_hash(f"{q_str}|{a_str}")
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM faq_entries WHERE id = ?", (faq_id,))
+            if not cursor.fetchone():
+                return False
+            cursor.execute("SELECT id FROM faq_entries WHERE source_hash = ? AND id != ?", (base_hash, faq_id))
+            if cursor.fetchone():
+                source_hash = self.compute_hash(f"{q_str}|{a_str}|{faq_id}")
+            else:
+                source_hash = base_hash
+            cursor.execute("""
+                UPDATE faq_entries
+                SET question = ?, answer = ?, category = ?, keywords = ?, source_hash = ?, is_active = 1, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (q_str, a_str, c_str, kw_str, source_hash, faq_id))
+            return cursor.rowcount > 0
+
+    def delete_faq_record(self, faq_id: int) -> bool:
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM faq_entries WHERE id = ?", (faq_id,))
+            if not cursor.fetchone():
+                return False
+            cursor.execute("DELETE FROM faq_likes WHERE faq_id = ?", (faq_id,))
+            cursor.execute("DELETE FROM faq_entries WHERE id = ?", (faq_id,))
+            return cursor.rowcount > 0
+
     def list_faqs(
         self,
         category: Optional[str] = None,

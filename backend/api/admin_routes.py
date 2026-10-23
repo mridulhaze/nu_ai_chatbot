@@ -753,6 +753,26 @@ class AdminCreateFAQRequest(BaseModel):
     keywords: Optional[str] = ""
     force: Optional[bool] = False
 
+class AdminUpdateFAQRequest(BaseModel):
+    question: str
+    answer: str
+    category: Optional[str] = "সাধারণ তথ্য"
+    keywords: Optional[str] = ""
+
+@router.get("/faqs", summary="List all FAQ Questions & Answers category-wise with duplicate detection")
+def admin_list_faqs_endpoint(
+    category: Optional[str] = Query(None, description="Filter by category"),
+    search: Optional[str] = Query(None, description="Search query"),
+    only_duplicates: bool = Query(False, description="Show only duplicate questions"),
+    user: Optional[dict] = Depends(get_current_user_optional)
+):
+    faq_service = get_faq_service()
+    return faq_service.list_admin_faqs_categorywise(
+        category=category,
+        search=search,
+        only_duplicates=only_duplicates
+    )
+
 @router.post("/faqs", summary="Add FAQ Question & Answer with Similarity Checking")
 def admin_add_faq_endpoint(
     payload: AdminCreateFAQRequest,
@@ -769,6 +789,40 @@ def admin_add_faq_endpoint(
     )
     if result["status"] == "error":
         raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+@router.put("/faqs/{faq_id}", summary="Update an existing FAQ Question & Answer")
+def admin_update_faq_endpoint(
+    faq_id: int,
+    payload: AdminUpdateFAQRequest,
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
+):
+    faq_service = get_faq_service()
+    result = faq_service.update_faq_entry(
+        faq_id=faq_id,
+        question=payload.question,
+        answer=payload.answer,
+        category=payload.category or "সাধারণ তথ্য",
+        keywords=payload.keywords or "",
+        admin_user=user.get("username", "Admin")
+    )
+    if result["status"] == "error":
+        code = 404 if "not found" in result["message"].lower() else 400
+        raise HTTPException(status_code=code, detail=result["message"])
+    return result
+
+@router.delete("/faqs/{faq_id}", summary="Delete an existing FAQ Question & Answer")
+def admin_delete_faq_endpoint(
+    faq_id: int,
+    user: dict = Depends(require_roles([Role.EXAM_ENTRY, Role.ADMIN, Role.SUPER_ADMIN]))
+):
+    faq_service = get_faq_service()
+    result = faq_service.delete_faq_entry(
+        faq_id=faq_id,
+        admin_user=user.get("username", "Admin")
+    )
+    if result["status"] == "error":
+        raise HTTPException(status_code=404, detail=result["message"])
     return result
 
 @router.post("/faqs/check-similar", summary="Check if similar question exists before submission")

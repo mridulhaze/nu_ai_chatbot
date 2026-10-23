@@ -2556,15 +2556,34 @@
                 <span class="text-2xl">❓</span>
                 <div>
                   <h4 class="text-sm font-bold text-slate-900">FAQ Q&amp;A Entry (FAQ প্যানেলে প্রশ্ন ও উত্তর যুক্ত করুন)</h4>
-                  <p class="text-[11px] text-slate-600">এখানে প্রশ্ন ও উত্তর লিখে <strong>Submit FAQ</strong> বাটনে ক্লিক করলে তা সরাসরি চ্যাটবটের FAQ প্যানেলে যুক্ত হবে</p>
+                  <p class="text-[11px] text-slate-600">নতুন প্রশ্ন ও উত্তর যুক্ত করুন অথবা <strong>FAQ Questions</strong> অপশন থেকে ক্যাটাগরি অনুযায়ী পূর্বের প্রশ্ন ও উত্তর Edit / Delete করুন</p>
                 </div>
               </div>
-              <span class="bg-emerald-100 text-emerald-900 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-300">
-                Live FAQ Panel Sync
-              </span>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" id="btn-open-faq-questions" onclick="openFaqQuestionsManager()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+                  <span>📚</span>
+                  <span>FAQ Questions (<span id="faq-total-count-header">0</span>)</span>
+                </button>
+                <span class="bg-emerald-100 text-emerald-900 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-300">
+                  Live FAQ Panel Sync
+                </span>
+              </div>
             </div>
 
             <form id="admin-faq-form" onsubmit="submitAdminFaqForm(event)" class="space-y-3.5 text-xs pt-1">
+              <input id="admin-faq-edit-id" type="hidden" value="" />
+
+              <!-- Edit Mode Banner -->
+              <div id="admin-faq-edit-banner" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-300 text-blue-950 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 text-xs font-bold">
+                  <span>✏️</span>
+                  <span>Editing FAQ Question #<span id="admin-faq-edit-badge-id"></span> — নিচের প্রশ্ন বা উত্তর সংশোধন করে Update বাটনে ক্লিক করুন</span>
+                </div>
+                <button type="button" onclick="clearAdminFaqForm()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold px-2.5 py-1 rounded-lg cursor-pointer transition">
+                  ✖ Cancel Edit
+                </button>
+              </div>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1">১. ক্যাটাগরি নির্বাচন করুন (FAQ Category) <span class="text-rose-500">*</span>:</label>
@@ -2622,7 +2641,7 @@
                 <div class="flex items-center gap-2">
                   <button type="submit" id="btn-submit-faq-entry" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                     <span>✅</span>
-                    <span>Submit FAQ to Panel (FAQ যুক্ত করুন)</span>
+                    <span id="btn-submit-faq-entry-label">Submit FAQ to Panel (FAQ যুক্ত করুন)</span>
                   </button>
                   <button type="button" onclick="clearAdminFaqForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3.5 py-2.5 rounded-xl transition cursor-pointer">
                     Clear
@@ -2632,17 +2651,53 @@
               </div>
             </form>
 
-            <!-- Live Preview of Recent FAQ Panel Questions -->
-            <div class="pt-3 border-t border-slate-200 space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                  <span>📋</span>
-                  <span>Current FAQ Panel Items (সর্বশেষ সংযোজিত প্রশ্নোত্তর)</span>
-                </span>
-                <button type="button" onclick="loadRecentFaqPanelEntries()" class="text-[11px] text-emerald-700 hover:underline font-bold cursor-pointer">🔄 Refresh FAQ List</button>
+            <!-- FAQ Questions Option: Category-wise Previously Given Questions & Answers Manager (Edit & Delete Duplicates) -->
+            <div id="faq-questions-manager-box" class="pt-4 border-t-2 border-emerald-100 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">📚</span>
+                  <div>
+                    <h5 class="text-xs sm:text-sm font-bold text-slate-900">FAQ Questions (পূর্বে প্রদত্ত প্রশ্ন ও উত্তরসমূহ — ক্যাটাগরি অনুযায়ী)</h5>
+                    <p class="text-[11px] text-slate-500">ক্যাটাগরি অনুযায়ী প্রশ্ন ও উত্তর দেখুন, <strong>✏️ Edit</strong> বাটনে ক্লিক করে সংশোধন করুন এবং ডুপ্লিকেট প্রশ্ন থাকলে <strong>🗑️ Delete</strong> করুন</p>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" id="btn-faq-filter-duplicates" onclick="toggleAdminFaqDuplicatesFilter()" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1">
+                    <span>⚠️</span>
+                    <span>Duplicate Questions (<span id="faq-duplicates-count-badge">0</span>)</span>
+                  </button>
+                  <button type="button" onclick="loadRecentFaqPanelEntries()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer">
+                    🔄 Load / Refresh FAQ Questions
+                  </button>
+                </div>
               </div>
-              <div id="faq-entry-recent-list" class="max-h-48 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50/50 text-xs">
-                <div class="p-3 text-center text-slate-400">Loading FAQ panel items...</div>
+
+              <!-- Category Filter Dropdown + Search Bar -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 mb-1">ক্যাটাগরি ফিল্টার (Select Category):</label>
+                  <select id="faq-manage-category-filter" onchange="filterAdminFaqQuestionsList()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-600">
+                    <option value="all">📂 সকল ক্যাটাগরি (All Categories)</option>
+                    <option value="পরীক্ষা সংক্রান্ত">📝 পরীক্ষা সংক্রান্ত</option>
+                    <option value="রেজাল্ট সংক্রান্ত">📊 রেজাল্ট সংক্রান্ত</option>
+                    <option value="ভর্তি সংক্রান্ত">🏛️ ভর্তি সংক্রান্ত</option>
+                    <option value="সার্টিফিকেট ও সেবা">📜 সার্টিফিকেট ও সেবা</option>
+                    <option value="ফি ও সোনালী সেবা">💳 ফি ও সোনালী সেবা</option>
+                    <option value="সাধারণ তথ্য">ℹ️ সাধারণ তথ্য</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-[10px] font-bold text-slate-600 mb-1">প্রশ্ন বা উত্তর খুঁজুন (Search Question / Answer):</label>
+                  <input id="faq-manage-search" type="text" oninput="filterAdminFaqQuestionsList()" placeholder="প্রশ্ন, উত্তর বা কীওয়ার্ড লিখে খুঁজুন..." class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600" />
+                </div>
+              </div>
+
+              <!-- Category Quick Pills -->
+              <div id="faq-manage-category-pills" class="flex flex-wrap items-center gap-1.5 pt-0.5"></div>
+
+              <!-- Category-wise FAQ Questions & Answers List -->
+              <div id="faq-entry-recent-list" class="max-h-[460px] overflow-y-auto space-y-3 pr-1 text-xs">
+                <div class="p-4 text-center text-slate-400 border border-slate-200 rounded-xl bg-slate-50/50">Loading FAQ questions category-wise...</div>
               </div>
             </div>
           </div>
@@ -7338,6 +7393,7 @@
 
     async function submitAdminFaqForm(e) {
       if (e) e.preventDefault();
+      const editIdInput = document.getElementById("admin-faq-edit-id");
       const qInput = document.getElementById("admin-faq-question");
       const aInput = document.getElementById("admin-faq-answer");
       const catSelect = document.getElementById("admin-faq-category");
@@ -7346,6 +7402,7 @@
       const forceCheck = document.getElementById("admin-faq-force");
       const statusMsg = document.getElementById("admin-faq-status-msg");
 
+      const editId = editIdInput ? editIdInput.value.trim() : "";
       const q = qInput ? qInput.value.trim() : "";
       const a = aInput ? aInput.value.trim() : "";
       const cat = catSelect ? catSelect.value : "সাধারণ তথ্য";
@@ -7363,7 +7420,9 @@
 
       if (statusMsg) {
         statusMsg.className = "text-xs font-semibold text-blue-600";
-        statusMsg.innerText = "⏳ ডাটাবেজে সংরক্ষণ ও ভেক্টর ইনডেক্সিং হচ্ছে...";
+        statusMsg.innerText = editId
+          ? `⏳ FAQ #${editId} আপডেট করা হচ্ছে...`
+          : "⏳ ডাটাবেজে সংরক্ষণ ও ভেক্টর ইনডেক্সিং হচ্ছে...";
       }
 
       try {
@@ -7371,8 +7430,11 @@
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
 
-        const res = await fetch("/api/v1/admin/faqs", {
-          method: "POST",
+        const url = editId ? `/api/v1/admin/faqs/${encodeURIComponent(editId)}` : "/api/v1/admin/faqs";
+        const method = editId ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method: method,
           headers: headers,
           body: JSON.stringify({
             question: q,
@@ -7388,11 +7450,16 @@
         if (res.ok && result.status === "success") {
           if (statusMsg) {
             statusMsg.className = "text-xs font-bold text-emerald-600";
-            statusMsg.innerText = `✅ নতুন প্রশ্নোত্তর সফলভাবে FAQ প্যানেলে যুক্ত হয়েছে (FAQ ID: #${result.faq_id})`;
+            statusMsg.innerText = editId
+              ? `✅ প্রশ্নোত্তর (#${result.faq_id || editId}) সফলভাবে আপডেট করা হয়েছে!`
+              : `✅ নতুন প্রশ্নোত্তর সফলভাবে FAQ প্যানেলে যুক্ত হয়েছে (FAQ ID: #${result.faq_id})`;
           }
-          clearAdminFaqForm();
+          clearAdminFaqForm(true);
           if (typeof loadRecentFaqPanelEntries === "function") {
             loadRecentFaqPanelEntries();
+          }
+          if (typeof fetchFaqEntries === "function") {
+            fetchFaqEntries();
           }
         } else if (result.status === "similar_exists") {
           const simBox = document.getElementById("admin-faq-sim-box");
@@ -7424,22 +7491,27 @@
       }
     }
 
-    function clearAdminFaqForm() {
+    function clearAdminFaqForm(keepStatusMsg = false) {
+      const editIdInput = document.getElementById("admin-faq-edit-id");
+      const editBanner = document.getElementById("admin-faq-edit-banner");
+      const submitLabel = document.getElementById("btn-submit-faq-entry-label");
       const qInput = document.getElementById("admin-faq-question");
       const aInput = document.getElementById("admin-faq-answer");
-      const catSelect = document.getElementById("admin-faq-category");
       const kwInput = document.getElementById("admin-faq-keywords");
       const srcInput = document.getElementById("admin-faq-source-url");
       const forceCheck = document.getElementById("admin-faq-force");
       const simBox = document.getElementById("admin-faq-sim-box");
       const statusMsg = document.getElementById("admin-faq-status-msg");
+      if (editIdInput) editIdInput.value = "";
+      if (editBanner) editBanner.classList.add("hidden");
+      if (submitLabel) submitLabel.innerText = "Submit FAQ to Panel (FAQ যুক্ত করুন)";
       if (qInput) qInput.value = "";
       if (aInput) aInput.value = "";
       if (kwInput) kwInput.value = "";
       if (srcInput) srcInput.value = "";
       if (forceCheck) forceCheck.checked = false;
       if (simBox) simBox.classList.add("hidden");
-      if (statusMsg) {
+      if (!keepStatusMsg && statusMsg) {
         statusMsg.innerText = "";
         statusMsg.className = "text-xs font-semibold";
       }
@@ -7660,29 +7732,271 @@
       }
     }
 
+    let adminFaqItemsCache = [];
+    let adminFaqCategoriesSummary = [];
+    let adminFaqDuplicatesOnly = false;
+
+    function openFaqQuestionsManager() {
+      const box = document.getElementById("faq-questions-manager-box");
+      if (box) {
+        box.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      loadRecentFaqPanelEntries();
+    }
+
+    function toggleAdminFaqDuplicatesFilter() {
+      adminFaqDuplicatesOnly = !adminFaqDuplicatesOnly;
+      const btn = document.getElementById("btn-faq-filter-duplicates");
+      if (btn) {
+        if (adminFaqDuplicatesOnly) {
+          btn.className = "bg-rose-600 hover:bg-rose-700 text-white border border-rose-700 text-[11px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 shadow-2xs";
+        } else {
+          btn.className = "bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1";
+        }
+      }
+      filterAdminFaqQuestionsList();
+    }
+
+    function selectAdminFaqCategoryPill(catValue) {
+      const catSelect = document.getElementById("faq-manage-category-filter");
+      if (catSelect) {
+        catSelect.value = catValue;
+      }
+      filterAdminFaqQuestionsList();
+    }
+
     async function loadRecentFaqPanelEntries() {
       const listEl = document.getElementById("faq-entry-recent-list");
       if (!listEl) return;
       try {
-        const res = await fetch("/api/v1/faqs");
+        const token = getAdminAuthToken() || localStorage.getItem("nu_admin_token") || "";
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch("/api/v1/admin/faqs", { headers });
         const data = await res.json();
-        const faqs = Array.isArray(data) ? data : (data.faqs || data.data || []);
-        if (!faqs.length) {
-          listEl.innerHTML = `<div class="p-3 text-center text-slate-400">কোনো প্রশ্নোত্তর পাওয়া যায়নি।</div>`;
-          return;
-        }
-        const recent = faqs.slice(-15).reverse();
-        listEl.innerHTML = recent.map(item => `
-          <div class="p-2.5 hover:bg-white transition flex flex-col gap-1">
-            <div class="flex items-center justify-between gap-2">
-              <span class="font-bold text-emerald-800">${escapeHTML(item.question || "")}</span>
-              <span class="shrink-0 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">${escapeHTML(item.category || "সাধারণ তথ্য")}</span>
-            </div>
-            <p class="text-slate-600 text-[11px] line-clamp-2">${escapeHTML(item.answer || "")}</p>
-          </div>
-        `).join("");
+        const items = Array.isArray(data.items) ? data.items : (Array.isArray(data) ? data : (data.faqs || []));
+        adminFaqItemsCache = items;
+        adminFaqCategoriesSummary = Array.isArray(data.categories) ? data.categories : [];
+
+        const totalHeader = document.getElementById("faq-total-count-header");
+        if (totalHeader) totalHeader.innerText = String(data.total_all ?? items.length);
+
+        const dupBadge = document.getElementById("faq-duplicates-count-badge");
+        if (dupBadge) dupBadge.innerText = String(data.duplicates_count ?? items.filter(i => i.is_duplicate).length);
+
+        filterAdminFaqQuestionsList();
       } catch (e) {
-        listEl.innerHTML = `<div class="p-3 text-center text-rose-500">FAQ তালিকা লোড করা যায়নি।</div>`;
+        console.error("loadRecentFaqPanelEntries error:", e);
+        listEl.innerHTML = `<div class="p-3 text-center text-rose-500 border border-rose-200 rounded-xl bg-rose-50">FAQ তালিকা লোড করা যায়নি।</div>`;
+      }
+    }
+
+    function filterAdminFaqQuestionsList() {
+      const listEl = document.getElementById("faq-entry-recent-list");
+      const pillsEl = document.getElementById("faq-manage-category-pills");
+      if (!listEl) return;
+
+      const catSelect = document.getElementById("faq-manage-category-filter");
+      const searchInput = document.getElementById("faq-manage-search");
+      const selectedCat = catSelect ? catSelect.value : "all";
+      const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+      // Render category quick pills
+      if (pillsEl) {
+        const catMap = {};
+        adminFaqItemsCache.forEach(it => {
+          const c = it.category || "সাধারণ তথ্য";
+          catMap[c] = (catMap[c] || 0) + 1;
+        });
+        const orderedCats = ["পরীক্ষা সংক্রান্ত", "রেজাল্ট সংক্রান্ত", "ভর্তি সংক্রান্ত", "সার্টিফিকেট ও সেবা", "ফি ও সোনালী সেবা", "সাধারণ তথ্য"];
+        Object.keys(catMap).forEach(k => {
+          if (!orderedCats.includes(k)) orderedCats.push(k);
+        });
+
+        const allActive = selectedCat === "all";
+        let pillsHtml = `
+          <button type="button" onclick="selectAdminFaqCategoryPill('all')" class="${allActive ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'} border text-[11px] font-bold px-2.5 py-1 rounded-full transition cursor-pointer">
+            📂 সকল ক্যাটাগরি (${adminFaqItemsCache.length})
+          </button>
+        `;
+        orderedCats.forEach(c => {
+          const cnt = catMap[c] || 0;
+          if (cnt === 0) return;
+          const isActive = selectedCat === c;
+          const safeCatJs = c.replace(/'/g, "\\'");
+          pillsHtml += `
+            <button type="button" onclick="selectAdminFaqCategoryPill('${safeCatJs}')" class="${isActive ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'} border text-[11px] font-bold px-2.5 py-1 rounded-full transition cursor-pointer">
+              ${escapeHTML(c)} (${cnt})
+            </button>
+          `;
+        });
+        pillsEl.innerHTML = pillsHtml;
+      }
+
+      const filtered = adminFaqItemsCache.filter(item => {
+        if (selectedCat !== "all" && (item.category || "সাধারণ তথ্য") !== selectedCat) {
+          return false;
+        }
+        if (adminFaqDuplicatesOnly && !item.is_duplicate) {
+          return false;
+        }
+        if (searchQuery) {
+          const hay = `${item.question || ""} ${item.answer || ""} ${item.category || ""} ${item.keywords || ""}`.toLowerCase();
+          if (!hay.includes(searchQuery)) return false;
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        listEl.innerHTML = `
+          <div class="p-4 text-center text-slate-500 border border-slate-200 rounded-xl bg-slate-50">
+            ${adminFaqDuplicatesOnly ? '✅ কোনো ডুপ্লিকেট বা একই প্রশ্ন পাওয়া যায়নি!' : 'কোনো প্রশ্নোত্তর পাওয়া যায়নি।'}
+          </div>
+        `;
+        return;
+      }
+
+      // Group category-wise
+      const grouped = {};
+      filtered.forEach(item => {
+        const c = item.category || "সাধারণ তথ্য";
+        if (!grouped[c]) grouped[c] = [];
+        grouped[c].push(item);
+      });
+
+      listEl.innerHTML = Object.entries(grouped).map(([catName, groupItems]) => `
+        <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+          <div class="bg-emerald-50/90 px-3.5 py-2 border-b border-emerald-100 flex items-center justify-between">
+            <span class="font-extrabold text-emerald-950 text-xs flex items-center gap-1.5">
+              <span>📁</span>
+              <span>${escapeHTML(catName)}</span>
+            </span>
+            <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
+              ${groupItems.length} টি প্রশ্ন
+            </span>
+          </div>
+          <div class="divide-y divide-slate-100">
+            ${groupItems.map(item => {
+              const dupBadgeHtml = item.is_duplicate
+                ? `<span class="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full">⚠️ Duplicate Question ${Array.isArray(item.duplicate_ids) && item.duplicate_ids.length ? '(Matches #' + item.duplicate_ids.join(', #') + ')' : ''}</span>`
+                : "";
+              return `
+                <div class="p-3 hover:bg-slate-50/80 transition flex flex-col gap-1.5 ${item.is_duplicate ? 'bg-amber-50/40' : ''}">
+                  <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="bg-slate-100 text-slate-600 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded">#${item.id}</span>
+                      <span class="font-bold text-emerald-900 text-xs">${escapeHTML(item.question || "")}</span>
+                      ${dupBadgeHtml}
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <button type="button" onclick="editAdminFaqItem(${item.id})" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-bold px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1" title="প্রশ্ন ও উত্তর এডিট করুন">
+                        <span>✏️</span>
+                        <span>Edit</span>
+                      </button>
+                      <button type="button" onclick="deleteAdminFaqItem(${item.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1" title="প্রশ্নটি মুছে ফেলুন">
+                        <span>🗑️</span>
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-slate-700 text-[11px] whitespace-pre-line leading-relaxed pl-1 border-l-2 border-emerald-300">${escapeHTML(item.answer || "")}</p>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function editAdminFaqItem(faqId) {
+      const item = adminFaqItemsCache.find(it => Number(it.id) === Number(faqId));
+      if (!item) return;
+
+      const editIdInput = document.getElementById("admin-faq-edit-id");
+      const editBanner = document.getElementById("admin-faq-edit-banner");
+      const editBadgeId = document.getElementById("admin-faq-edit-badge-id");
+      const submitLabel = document.getElementById("btn-submit-faq-entry-label");
+      const catSelect = document.getElementById("admin-faq-category");
+      const kwInput = document.getElementById("admin-faq-keywords");
+      const qInput = document.getElementById("admin-faq-question");
+      const aInput = document.getElementById("admin-faq-answer");
+      const simBox = document.getElementById("admin-faq-sim-box");
+      const statusMsg = document.getElementById("admin-faq-status-msg");
+
+      if (editIdInput) editIdInput.value = String(item.id);
+      if (editBadgeId) editBadgeId.innerText = String(item.id);
+      if (editBanner) editBanner.classList.remove("hidden");
+      if (submitLabel) submitLabel.innerText = `💾 Update FAQ #${item.id} (আপডেট করুন)`;
+
+      if (catSelect && item.category) {
+        const exists = Array.from(catSelect.options).some(opt => opt.value === item.category);
+        if (!exists) {
+          const opt = document.createElement("option");
+          opt.value = item.category;
+          opt.textContent = item.category;
+          catSelect.appendChild(opt);
+        }
+        catSelect.value = item.category;
+      }
+      if (kwInput) kwInput.value = item.keywords || "";
+      if (qInput) qInput.value = item.question || "";
+      if (aInput) aInput.value = item.answer || "";
+      if (simBox) simBox.classList.add("hidden");
+      if (statusMsg) {
+        statusMsg.className = "text-xs font-bold text-blue-700";
+        statusMsg.innerText = `✏️ FAQ #${item.id} ফর্মে লোড হয়েছে। পরিবর্তন করে Update বাটনে ক্লিক করুন।`;
+      }
+
+      const formEl = document.getElementById("admin-faq-form");
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (qInput) qInput.focus();
+    }
+
+    async function deleteAdminFaqItem(faqId) {
+      const item = adminFaqItemsCache.find(it => Number(it.id) === Number(faqId));
+      const qPreview = item ? item.question : `#${faqId}`;
+      if (!confirm(`আপনি কি নিশ্চিতভাবে এই প্রশ্নোত্তরটি মুছে ফেলতে চান?\n\nপ্রশ্ন: "${qPreview}"`)) {
+        return;
+      }
+      const statusMsg = document.getElementById("admin-faq-status-msg");
+      try {
+        const token = getAdminAuthToken() || localStorage.getItem("nu_admin_token") || "";
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`/api/v1/admin/faqs/${encodeURIComponent(faqId)}`, {
+          method: "DELETE",
+          headers: headers
+        });
+        const result = await res.json();
+        if (res.ok && result.status === "success") {
+          if (statusMsg) {
+            statusMsg.className = "text-xs font-bold text-emerald-600";
+            statusMsg.innerText = `🗑️ প্রশ্নোত্তর (#${faqId}) সফলভাবে মুছে ফেলা হয়েছে!`;
+          }
+          const editIdInput = document.getElementById("admin-faq-edit-id");
+          if (editIdInput && String(editIdInput.value) === String(faqId)) {
+            clearAdminFaqForm(true);
+          }
+          await loadRecentFaqPanelEntries();
+          if (typeof fetchFaqEntries === "function") {
+            fetchFaqEntries();
+          }
+        } else {
+          if (statusMsg) {
+            statusMsg.className = "text-xs font-bold text-rose-600";
+            statusMsg.innerText = `❌ মুছে ফেলতে ব্যর্থ: ${result.detail || result.message || 'Unknown error'}`;
+          }
+        }
+      } catch (e) {
+        console.error("deleteAdminFaqItem error:", e);
+        if (statusMsg) {
+          statusMsg.className = "text-xs font-bold text-rose-600";
+          statusMsg.innerText = "❌ সার্ভারের সাথে সংযোগে সমস্যা হয়েছে।";
+        }
       }
     }
 

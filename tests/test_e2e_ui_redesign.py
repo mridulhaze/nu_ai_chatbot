@@ -1345,7 +1345,11 @@ def test_t4_11_exam_entry_role_auth_and_permissions_e2e():
         }
     )
     assert faq_res.status_code == 200, f"EXAM_ENTRY failed to add FAQ: {faq_res.text}"
-    assert faq_res.json()["status"] == "success"
+    faq_json = faq_res.json()
+    assert faq_json["status"] == "success"
+    created_faq_id = faq_json.get("faq_id")
+    if created_faq_id:
+        client.delete(f"/api/v1/admin/faqs/{created_faq_id}", headers=exam_headers)
 
     # 4. Verify EXAM_ENTRY is forbidden (403) from Admin-only endpoints
     users_res = client.get("/api/v1/admin/users", headers=exam_headers)
@@ -1378,4 +1382,136 @@ def test_t4_11_exam_entry_role_auth_and_permissions_e2e():
         assert created_row["role"] == "EXAM_ENTRY"
     finally:
         client.delete(f"/api/v1/admin/users/{new_uid}", headers=admin_headers)
+
+
+def test_f12_05_faq_questions_categorywise_list_edit_delete_and_duplicates(index_soup, index_html):
+    """
+    Verify 'FAQ Questions' option inside 'FAQ Q&A Entry' loads questions & answers category-wise,
+    detects duplicate questions, and supports editing (PUT) and deleting (DELETE) FAQs.
+    """
+    import time
+    from fastapi.testclient import TestClient
+    from backend.app import app
+
+    # 1. Verify UI DOM IDs & JS functions exist in static/index.html
+    for dom_id in [
+        "btn-open-faq-questions",
+        "faq-questions-manager-box",
+        "faq-manage-category-filter",
+        "faq-manage-search",
+        "btn-faq-filter-duplicates",
+        "faq-duplicates-count-badge",
+        "admin-faq-edit-id",
+        "admin-faq-edit-banner",
+        "faq-entry-recent-list"
+    ]:
+        assert index_soup.find(id=dom_id) is not None, f"Missing #{dom_id} in FAQ Q&A Entry section"
+
+    for fn_name in [
+        "openFaqQuestionsManager",
+        "toggleAdminFaqDuplicatesFilter",
+        "filterAdminFaqQuestionsList",
+        "editAdminFaqItem",
+        "deleteAdminFaqItem"
+    ]:
+        assert fn_name in index_html, f"Missing JS function {fn_name} in static/index.html"
+
+    # 2. Backend E2E verification of category-wise list, duplicate detection, edit (PUT), and delete (DELETE)
+    client = TestClient(app)
+    login_res = client.post(
+        "/api/v1/auth/login",
+        json={"username": "exam_entry", "password": "nu_exam_2026"}
+    )
+    assert login_res.status_code == 200
+    exam_headers = {"Authorization": f"Bearer {login_res.json()['access_token']}"}
+
+    ts = int(time.time())
+    base_q = f"২০২৬ সালের মাস্টার্স শেষ পর্ব পরীক্ষার রুটিন কবে প্রকাশিত হবে? ({ts})"
+
+    faq1_id = None
+    faq2_id = None
+    try:
+        # Insert first FAQ
+        r1 = client.post(
+            "/api/v1/admin/faqs",
+            headers=exam_headers,
+            json={
+                "question": base_q,
+                "answer": "প্রাথমিক উত্তর ১: জাতীয় বিশ্ববিদ্যালয়ের ওয়েবসাইটে শীঘ্রই প্রকাশিত হবে।",
+                "category": "পরীক্ষা সংক্রান্ত",
+                "keywords": "মাস্টার্স, রুটিন",
+                "force": True
+            }
+        )
+        assert r1.status_code == 200
+        faq1_id = r1.json()["faq_id"]
+
+        # Insert near-duplicate second FAQ (different answer so hash differs, same normalized question)
+        r2 = client.post(
+            "/api/v1/admin/faqs",
+            headers=exam_headers,
+            json={
+                "question": base_q + "?",
+                "answer": "প্রাথমিক উত্তর ২ (ডুপ্লিকেট প্রশ্ন): ওয়েবসাইটে প্রকাশিত হবে।",
+                "category": "পরীক্ষা সংক্রান্ত",
+                "keywords": "মাস্টার্স, রুটিন",
+                "force": True
+            }
+        )
+        assert r2.status_code == 200
+        faq2_id = r2.json()["faq_id"]
+        assert faq1_id != faq2_id
+
+        # List category-wise via GET /api/v1/admin/faqs
+        list_res = client.get("/api/v1/admin/faqs?category=পরীক্ষা সংক্রান্ত", headers=exam_headers)
+        assert list_res.status_code == 200
+        list_data = list_res.json()
+        assert list_data["status"] == "success"
+        assert "পরীক্ষা সংক্রান্ত" in list_data["by_category"]
+        assert list_data["duplicates_count"] >= 2
+
+        cat_items = list_data["by_category"]["পরীক্ষা সংক্রান্ত"]
+        item1 = next((x for x in cat_items if x["id"] == faq1_id), None)
+        item2 = next((x for x in cat_items if x["id"] == faq2_id), None)
+        assert item1 is not None and item2 is not None
+        assert item1["is_duplicate"] is True
+        assert item2["is_duplicate"] is True
+        assert faq2_id in item1["duplicate_ids"]
+
+        # Edit FAQ #1 via PUT /api/v1/admin/faqs/{faq1_id}
+        updated_q = f"২০২৬ সালের মাস্টার্স শেষ পর্ব পরীক্ষার সংশোধিত ফলাফল কবে প্রকাশিত হবে? ({ts})"
+        updated_a = "সংশোধিত উত্তর: ফলাফল http://103.113.200.68/nu-app/ পোর্টালে পাওয়া যাবে।"
+        put_res = client.put(
+            f"/api/v1/admin/faqs/{faq1_id}",
+            headers=exam_headers,
+            json={
+                "question": updated_q,
+                "answer": updated_a,
+                "category": "রেজাল্ট সংক্রান্ত",
+                "keywords": "মাস্টার্স, ফলাফল"
+            }
+        )
+        assert put_res.status_code == 200, f"PUT /api/v1/admin/faqs/{faq1_id} failed: {put_res.text}"
+        put_data = put_res.json()
+        assert put_data["status"] == "success"
+        assert put_data["category"] == "রেজাল্ট সংক্রান্ত"
+
+        # Verify updated FAQ is now under 'রেজাল্ট সংক্রান্ত' category
+        verify_res = client.get("/api/v1/admin/faqs?category=রেজাল্ট সংক্রান্ত", headers=exam_headers).json()
+        edited_item = next((x for x in verify_res["items"] if x["id"] == faq1_id), None)
+        assert edited_item is not None
+        assert edited_item["question"] == updated_q
+        assert edited_item["answer"] == updated_a
+
+        # Delete duplicate FAQ #2 via DELETE /api/v1/admin/faqs/{faq2_id}
+        del_res = client.delete(f"/api/v1/admin/faqs/{faq2_id}", headers=exam_headers)
+        assert del_res.status_code == 200
+        assert del_res.json()["status"] == "success"
+        faq2_id = None
+    finally:
+        if faq1_id:
+            client.delete(f"/api/v1/admin/faqs/{faq1_id}", headers=exam_headers)
+        if faq2_id:
+            client.delete(f"/api/v1/admin/faqs/{faq2_id}", headers=exam_headers)
+
 

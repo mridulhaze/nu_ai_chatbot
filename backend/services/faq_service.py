@@ -319,6 +319,159 @@ class FAQService:
             "category": c_str
         }
 
+    def update_faq_entry(
+        self,
+        faq_id: int,
+        question: str,
+        answer: str,
+        category: str = "সাধারণ তথ্য",
+        keywords: Optional[str] = "",
+        admin_user: str = "Admin"
+    ) -> Dict[str, Any]:
+        """Updates an existing FAQ entry in SQLite faq_entries."""
+        q_str = (question or "").strip()
+        a_str = (answer or "").strip()
+        c_str = clean_category_name(category)
+        if not q_str:
+            return {"status": "error", "message": "Question cannot be empty."}
+        if not a_str:
+            return {"status": "error", "message": "Answer cannot be empty."}
+
+        if not keywords:
+            tokens = [t for t in re.split(r"[\s,;()\"'.-]+", f"{q_str} {c_str}") if len(t) > 2]
+            kw_str = " ".join(dict.fromkeys(tokens))
+        else:
+            kw_str = keywords.strip()
+
+        updated = self.sql_store.update_faq_record(
+            faq_id=faq_id,
+            question=q_str,
+            answer=a_str,
+            category=c_str,
+            keywords=kw_str
+        )
+        if not updated:
+            return {"status": "error", "message": f"FAQ #{faq_id} not found."}
+
+        logger.info(f"Admin FAQ #{faq_id} updated by {admin_user}. Category: {c_str}")
+        return {
+            "status": "success",
+            "message": f"প্রশ্নোত্তর (#{faq_id}) সফলভাবে আপডেট করা হয়েছে!",
+            "faq_id": faq_id,
+            "question": q_str,
+            "answer": a_str,
+            "category": c_str,
+            "keywords": kw_str
+        }
+
+    def delete_faq_entry(self, faq_id: int, admin_user: str = "Admin") -> Dict[str, Any]:
+        """Deletes an FAQ entry by ID from SQLite faq_entries."""
+        deleted = self.sql_store.delete_faq_record(faq_id)
+        if not deleted:
+            return {"status": "error", "message": f"FAQ #{faq_id} not found."}
+        logger.info(f"Admin FAQ #{faq_id} deleted by {admin_user}.")
+        return {
+            "status": "success",
+            "message": f"প্রশ্নোত্তর (#{faq_id}) সফলভাবে মুছে ফেলা হয়েছে!",
+            "faq_id": faq_id
+        }
+
+    def list_admin_faqs_categorywise(
+        self,
+        category: Optional[str] = None,
+        search: Optional[str] = None,
+        only_duplicates: bool = False
+    ) -> Dict[str, Any]:
+        """
+        Lists all active FAQs grouped category-wise, with duplicate question detection.
+        Marks questions that are exact normalized matches or >= 0.86 similarity as duplicates.
+        """
+        import difflib
+        all_res = self.sql_store.list_faqs(category=None, search=None, sort="latest", limit=2000, offset=0)
+        all_items = all_res.get("items", [])
+
+        # Normalize questions & detect duplicates across the entire FAQ set
+        norm_map: Dict[str, list[dict[str, Any]]] = {}
+        by_cat_clean: Dict[str, list[tuple[dict[str, Any], str]]] = {}
+        for item in all_items:
+            q_norm = re.sub(r"[?？।!.,;:\"'()\[\]\s]+", " ", (item.get("question") or "").strip().lower()).strip()
+            item["is_duplicate"] = False
+            item["duplicate_ids"] = []
+            norm_map.setdefault(q_norm, []).append(item)
+            cat_key = item.get("category") or "সাধারণ তথ্য"
+            by_cat_clean.setdefault(cat_key, []).append((item, q_norm))
+
+        # 1. Exact normalized text duplicates (across all categories)
+        for q_norm, group in norm_map.items():
+            if q_norm and len(group) > 1:
+                ids = [g["id"] for g in group]
+                for g in group:
+                    g["is_duplicate"] = True
+                    g["duplicate_ids"] = [i for i in ids if i != g["id"]]
+
+        # 2. Fast high-similarity (>= 0.86) near-duplicates within each category
+        for cat_key, cat_list in by_cat_clean.items():
+            n = len(cat_list)
+            for i in range(n):
+                item_i, q_i = cat_list[i]
+                if not q_i:
+                    continue
+                len_i = len(q_i)
+                for j in range(i + 1, n):
+                    item_j, q_j = cat_list[j]
+                    if not q_j or q_i == q_j or abs(len_i - len(q_j)) > 15:
+                        continue
+                    ratio = difflib.SequenceMatcher(None, q_i, q_j).ratio()
+                    if ratio >= 0.86:
+                        item_i["is_duplicate"] = True
+                        item_j["is_duplicate"] = True
+                        if item_j["id"] not in item_i["duplicate_ids"]:
+                            item_i["duplicate_ids"].append(item_j["id"])
+                        if item_i["id"] not in item_j["duplicate_ids"]:
+                            item_j["duplicate_ids"].append(item_i["id"])
+
+        duplicates_total = sum(1 for item in all_items if item.get("is_duplicate"))
+
+        # Compute category counts on all items
+        cat_counts: Dict[str, int] = {}
+        for item in all_items:
+            c = item.get("category") or "সাধারণ তথ্য"
+            cat_counts[c] = cat_counts.get(c, 0) + 1
+
+        # Apply filters
+        filtered: list[dict[str, Any]] = []
+        cat_filter = (category or "").strip()
+        search_filter = (search or "").strip().lower()
+
+        for item in all_items:
+            if cat_filter and cat_filter.lower() != "all" and item.get("category") != cat_filter:
+                continue
+            if only_duplicates and not item.get("is_duplicate"):
+                continue
+            if search_filter:
+                haystack = f"{item.get('question', '')} {item.get('answer', '')} {item.get('category', '')} {item.get('keywords', '')}".lower()
+                if search_filter not in haystack:
+                    continue
+            filtered.append(item)
+
+        # Group filtered items by category
+        by_category: Dict[str, list[dict[str, Any]]] = {}
+        for item in filtered:
+            c = item.get("category") or "সাধারণ তথ্য"
+            by_category.setdefault(c, []).append(item)
+
+        categories_summary = [{"category": k, "count": v} for k, v in sorted(cat_counts.items(), key=lambda x: (-x[1], x[0]))]
+
+        return {
+            "status": "success",
+            "total": len(filtered),
+            "total_all": len(all_items),
+            "duplicates_count": duplicates_total,
+            "categories": categories_summary,
+            "by_category": by_category,
+            "items": filtered
+        }
+
 
 # Singleton factory
 _faq_service_instance: Optional[FAQService] = None
